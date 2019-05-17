@@ -20,9 +20,7 @@ int main() {
 
 void led_blink() {
   while(true) {
-    led_set_status(0);
-    delay_ms(1000);
-    led_set_status(1);
+    led_toggle_status();
     delay_ms(1000);
   }
 }
