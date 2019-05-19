@@ -8,6 +8,9 @@
 #define GPIO_CAN_RX_PIN GPIO11
 #define GPIO_CAN_TX_PIN GPIO12
 
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
+
 void gpio_setup();
 
 void led_on();

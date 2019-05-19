@@ -2,7 +2,13 @@
 #define HARDWARE_H
 
 #include "rcc.h"
-#define SYSTICK_FREQ_HZ   (1000U)
-#define SYSTICK_PERIOD    ((SYSTEM_CORE_CLOCK)/(SYSTICK_FREQ_HZ))
+#include "gpio.h"
+#include "can.h"
+
+int hardware_setup(void);
+/**
+ * Set-up all the STM32 peripherals.
+ * Returns 0 on success, -1 on error.
+ */
 
 #endif
