@@ -53,3 +53,7 @@ dkms.conf
 
 # Emacs
 *~
+
+# Logs
+*.log
+
