@@ -2,6 +2,7 @@
 #define CAN_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 int can_setup(void);
 /**
@@ -12,7 +13,26 @@ int can_setup(void);
 /* User interrupt handlers */
 void can_error_handler(uint32_t can_esr);
 /**
- * See libopencm3/stm32/can.h for CAN_ESR values.
+ * It is triggered on a bit set in the CAN Error Status Register, on
+ * wakeup and entry to sleep mode. See libopencm3/stm32/can.h for
+ * CAN_ESR values.
+ */
+// TODO : helper to check for sleep mode, wakeup condition
+
+void can_rx_handler(uint8_t fifo, uint8_t pending, bool full, bool overrun);
+/**
+ * Tiggered when :
+ * - A message have been received. The number of pending messages is @pending.
+ * - The FIFO is full, @full is true.
+ * - The FIFO was overrun, @overrun is true.
+ */
+
+void can_tx_handler(uint8_t mailbox);
+/**
+ * Triggered when a pending message is being sent, ie. its associated
+ * mailbox becomes empty. The 3 lsb bits of mailbox gives the
+ * completed status of the three corresponding mailboxes in bxCAN,
+ * ie. bit 2 of mailbox at 1 means the mailbox2 is empty.
  */
 
 /* CAN_ESR helpers */

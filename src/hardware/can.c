@@ -87,15 +87,26 @@ static void can_enable_irqs() {
 
 /* System interrupt handlers */
 void usb_hp_can1_tx_isr(void) {
-  // TODO
+  uint32_t tsr = CAN_TSR(BX_CAN1_BASE);
+  can_tx_handler((uint8_t) ((tsr & 1)                |    //mailbox 0 (@ bit 0 ->  bit 0)
+			    ((tsr >> (8-1)) & 0b10)  |    //mailbox 1 (@ bit 8 ->  bit 1)
+			    ((tsr >> (8*2 - 2)) & 0b100)) //mailbox 2 (@ bit 16 -> bit 2)
+    );
+}
+
+static inline void can1_rx_isr(uint8_t fifo, uint32_t rfr){
+  can_rx_handler(fifo,                            // Fifo number
+		 (rfr & CAN_RF0R_FMP0_MASK) >> 0, // pending messages
+		 (rfr & CAN_RF0R_FULL0)     >> 3, // is full
+		 (rfr & CAN_RF0R_FOVR0)     >> 4);// is overrun
 }
 
 void usb_lp_can1_rx0_isr(void) {
-  
+  can1_rx_isr(0, CAN_RF0R(BX_CAN1_BASE));
 }
 
 void can1_rx1_isr(void) {
-  // TODO
+  can1_rx_isr(1, CAN_RF1R(BX_CAN1_BASE));
 }
 
 void can1_sce_isr(void) {
@@ -104,3 +115,5 @@ void can1_sce_isr(void) {
 
 /* User interrupt handlers */
 __attribute__((weak)) void can_error_handler(uint32_t can_esr);
+__attribute__((weak)) void can_rx_handler(uint8_t fifo, uint8_t pending, bool full, bool overrun);
+__attribute__((weak)) void can_tx_handler(uint8_t mailbox);
