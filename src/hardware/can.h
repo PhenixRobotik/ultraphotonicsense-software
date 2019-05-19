@@ -4,10 +4,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include <libopencm3/stm32/can.h>
+
 #define CAN_ENABLE_IRQ_RX_0 1
 #define CAN_ENABLE_IRQ_RX_1 0
 #define CAN_ENABLE_IRQ_TX   0
-#define CAN_ENABLE_IRQ_ERR  1
+#define CAN_ENABLE_IRQ_ERR  0
 
 int can_setup(void);
 /**

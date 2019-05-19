@@ -27,9 +27,9 @@ int can_setup(void){
 		     false, // No automatic retransmission (false = automatic)
 		     false, // FIFO lock function
 		     false, // FIFO priority mode (false = id priority mode)
-		     CAN_BTR_SJW_1TQ,
-		     CAN_BTR_TS1_9TQ,
-		     CAN_BTR_TS2_6TQ,
+		     CAN_BTR_SJW_1TQ, // 1
+		     CAN_BTR_TS1_9TQ, // 9
+		     CAN_BTR_TS2_6TQ, // 6
 		     4,
 		     false, // Silent mode
 		     false  // Loopback mode
@@ -62,7 +62,7 @@ static void can_enable_irqs() {
   /* For each interrupt, setup NVIC and set interrupt enable bits */
   
   // RX FIFO 0 interrupt
-#ifdef CAN_ENABLE_IRQ_RX_0
+#if CAN_ENABLE_IRQ_RX_0 == 1
   nvic_enable_irq(NVIC_USB_LP_CAN1_RX0_IRQ);
   nvic_set_priority(NVIC_USB_LP_CAN1_RX0_IRQ, 1);
   
@@ -72,7 +72,7 @@ static void can_enable_irqs() {
 #endif
 
   // RX FIFO 1 interrupt
-#ifdef CAN_ENABLE_IRQ_RX_1
+#if CAN_ENABLE_IRQ_RX_1 == 1
   nvic_enable_irq(NVIC_CAN1_RX1_IRQ);
   nvic_set_priority(NVIC_CAN1_RX1_IRQ, 1);
   
@@ -82,7 +82,7 @@ static void can_enable_irqs() {
 #endif
 
   // TX Interrupt
-#ifdef CAN_ENABLE_IRQ_TX
+#if CAN_ENABLE_IRQ_TX == 1
   nvic_enable_irq(NVIC_USB_HP_CAN1_TX_IRQ);
   nvic_set_priority(NVIC_USB_HP_CAN1_TX_IRQ, 1);
 
@@ -90,7 +90,7 @@ static void can_enable_irqs() {
 #endif
   
   // Status Change and Errors interrupt
-#ifdef CAN_ENABLE_IRQ_ERR
+#if CAN_ENABLE_IRQ_ERR == 1
   nvic_enable_irq(NVIC_CAN1_SCE_IRQ);
   nvic_set_priority(NVIC_CAN1_SCE_IRQ, 1);
 

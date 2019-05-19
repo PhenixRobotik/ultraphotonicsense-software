@@ -15,21 +15,14 @@ int main(){
     delay_ms(speed);
     led_toggle_status();
 
-
-    /* We call this handler every 1ms so every 1ms = 0.001s
-     * resulting in 1000Hz message rate.
-     */
-
     /* Transmit CAN frame. */
     data[0]++;
-#if 0
     can_transmit(CAN1,
-		 0,     /* (EX/ST)ID: CAN ID */
+		 1,     /* (EX/ST)ID: CAN ID */
 		 false, /* IDE: CAN ID extended? */
 		 false, /* RTR: Request transmit? */
 		 8,     /* DLC: Data length */
 		 data);
-#endif
   }
 	
   return 0;
