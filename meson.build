@@ -35,6 +35,12 @@ system_libraries = [
 ]
 
 
+add_project_arguments([
+    '-Werror=implicit-function-declaration',
+  ],
+  language: [ 'c', 'cpp' ],
+)
+
 ###############################################################################
 # Libopencm3
 
@@ -89,14 +95,12 @@ run_target('install_udev',
 lowlevel = static_library('lowlevel',
   'lowlevel/can.c',
   'lowlevel/clock.c',
-  'lowlevel/debug.c',
+
   'lowlevel/eeprom.c',
   'lowlevel/gpio.c',
+  'lowlevel/uart.c',
   dependencies: libopencm3,
   pic: false,
-)
-ll = declare_dependency(
-  link_with: lowlevel,
 )
 
 #############################
