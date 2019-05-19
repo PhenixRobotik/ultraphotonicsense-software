@@ -59,30 +59,52 @@ int can_setup(void){
 }
 
 static void can_enable_irqs() {
-  /* Setup NVIC */
+  /* For each interrupt, setup NVIC and set interrupt enable bits */
+  
   // RX FIFO 0 interrupt
+#ifdef CAN_ENABLE_IRQ_RX_0
   nvic_enable_irq(NVIC_USB_LP_CAN1_RX0_IRQ);
   nvic_set_priority(NVIC_USB_LP_CAN1_RX0_IRQ, 1);
+  
+  can_enable_irq(CAN1, CAN_IER_FMPIE0);
+  can_enable_irq(CAN1, CAN_IER_FFIE0);
+  can_enable_irq(CAN1, CAN_IER_FOVIE0);
+#endif
 
+  // RX FIFO 1 interrupt
+#ifdef CAN_ENABLE_IRQ_RX_1
+  nvic_enable_irq(NVIC_CAN1_RX1_IRQ);
+  nvic_set_priority(NVIC_CAN1_RX1_IRQ, 1);
+  
+  can_enable_irq(CAN1, CAN_IER_FMPIE1);
+  can_enable_irq(CAN1, CAN_IER_FFIE1);
+  can_enable_irq(CAN1, CAN_IER_FOVIE1);
+#endif
+
+  // TX Interrupt
+#ifdef CAN_ENABLE_IRQ_TX
+  nvic_enable_irq(NVIC_USB_HP_CAN1_TX_IRQ);
+  nvic_set_priority(NVIC_USB_HP_CAN1_TX_IRQ, 1);
+
+  can_enable_irq(CAN1, CAN_IER_TMEIE);
+#endif
+  
   // Status Change and Errors interrupt
+#ifdef CAN_ENABLE_IRQ_ERR
   nvic_enable_irq(NVIC_CAN1_SCE_IRQ);
   nvic_set_priority(NVIC_CAN1_SCE_IRQ, 1);
 
-  // TODO : handlers
+  can_enable_irq(CAN1, CAN_IER_ERRIE); // error detection
+  can_enable_irq(CAN1, CAN_IER_EWGIE); // warning limit reached
+  can_enable_irq(CAN1, CAN_IER_EPVIE); // passive limit reached
+  can_enable_irq(CAN1, CAN_IER_BOFIE); // bus-off
+  can_enable_irq(CAN1, CAN_IER_LECIE); // last error code
+  // TODO : support Wakeup and Sleep in error handler
+  //can_enable_irq(CAN1, CAN_IER_WKUIE);
+  //can_enable_irq(CAN1, CAN_IER_SLKIE);
+#endif
+
   // TODO : check priority relevance
-  /**
-   * Other interrupts are :
-   * NVIC_USB_HP_CAN1_TX_IRQ for TX events
-   * NVIC_CAN1_RX1_IRQ for RX fifo 1 events
-   *
-   * Note : needed events must also be enabled in the peripheral.
-   */
-
-  // Trigger an interrupt whenever a new message is available in RX FIFO 0
-  can_enable_irq(CAN1, CAN_IER_FMPIE0);
-
-  // Interrupt when an error is set in the Error Status Register
-  can_enable_irq(CAN1, CAN_IER_ERRIE);
 }
 
 /* System interrupt handlers */
