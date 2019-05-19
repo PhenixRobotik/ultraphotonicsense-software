@@ -77,7 +77,9 @@ endif
 %.o: %.c
 	@printf "  CC      $<\n"
 	$(Q)$(CC) $(CFLAGS) $(ARCH_FLAGS) -o $@ -c $<
+	$(Q)$(CC) -MM -MP -MT$@ $(CFLAGS) $*.c > $*.d
 
 %.o: %.cpp
 	@printf "  CXX     $(*).cpp\n"
 	$(Q)$(CXX) $(CXXFLAGS) $(ARCH_FLAGS) -o $@ -c $<
+	$(Q)$(CXX) -MM -MP -MT$(dir $*) $(CXXFLAGS) $*.cpp > $*.d

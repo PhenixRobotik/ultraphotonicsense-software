@@ -56,8 +56,14 @@ LDFLAGS += \
 	-lg \
 	-lrdimon
 
+# Objects dependencies
+# This allow make to take track of modified header files
+C_DEPS := $(C_OBJS:.o=.d)
+-include $(C_DEPS)
+
 # Linker script
 LDFLAGS += -T$(PROJECT_LDSCRIPT)
+
 
 # Toolchain
 include $(PROJECT_MK)/toolchain.mk
@@ -65,6 +71,8 @@ include $(PROJECT_MK)/rules.mk
 
 # Openocd configuration
 OPENOCD_CFG = /usr/share/openocd/scripts/board/st_nucleo_f3.cfg
+
+
 
 # Project build
 all: libs $(PROJECT_NAME).hex
@@ -88,7 +96,7 @@ libs: libopencm3
 
 # Project clean
 clean:
-	-rm -f $(C_OBJS) $(PROJECT_NAME).elf $(PROJECT_NAME).hex
+	-rm -f $(C_OBJS) $(C_DEPS) $(PROJECT_NAME).elf $(PROJECT_NAME).hex
 
 clean-libs: libopencm3-clean
 
