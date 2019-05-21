@@ -4,6 +4,8 @@
 #include <libopencm3/stm32/f3/nvic.h>
 #include <libopencm3/stm32/can.h>
 
+#include "common_defs.h"
+
 static void can_enable_irqs();
 
 int can_setup(void){
@@ -110,6 +112,21 @@ static void can_enable_irqs() {
 /* System interrupt handlers */
 void usb_hp_can1_tx_isr(void) {
   uint32_t tsr = CAN_TSR(BX_CAN1_BASE);
+
+  /* Clear flags */
+  if(IS_SET(tsr, CAN_TSR_RQCP0)) {
+    CLEAR(CAN_TSR(BX_CAN1_BASE), CAN_TSR_RQCP0);
+  }
+
+  if(IS_SET(tsr, CAN_TSR_RQCP1)) {
+    CLEAR(CAN_TSR(BX_CAN1_BASE), CAN_TSR_RQCP1);
+  }
+
+  if(IS_SET(tsr, CAN_TSR_RQCP2)) {
+    CLEAR(CAN_TSR(BX_CAN1_BASE), CAN_TSR_RQCP2);
+  }
+  
+  //TODO : check if the transmission succeeded or failed
   can_tx_handler((uint8_t) ((tsr & 1)                |    //mailbox 0 (@ bit 0 ->  bit 0)
 			    ((tsr >> (8-1)) & 0b10)  |    //mailbox 1 (@ bit 8 ->  bit 1)
 			    ((tsr >> (8*2 - 2)) & 0b100)) //mailbox 2 (@ bit 16 -> bit 2)
@@ -124,15 +141,46 @@ static inline void can1_rx_isr(uint8_t fifo, uint32_t rfr){
 }
 
 void usb_lp_can1_rx0_isr(void) {
-  can1_rx_isr(0, CAN_RF0R(BX_CAN1_BASE));
+  uint32_t rfr = CAN_RF0R(BX_CAN1_BASE);
+
+  /* Clear flags */
+  if(IS_SET(rfr, CAN_RF0R_FOVR0)) {
+    CLEAR(CAN_RF0R(BX_CAN1_BASE), CAN_RF0R_FOVR0);
+  }
+
+  if(IS_SET(rfr, CAN_RF0R_FULL0)) {
+    CLEAR(CAN_RF0R(BX_CAN1_BASE), CAN_RF0R_FULL0);
+  }
+  
+  can1_rx_isr(0, rfr);
 }
 
 void can1_rx1_isr(void) {
-  can1_rx_isr(1, CAN_RF1R(BX_CAN1_BASE));
+  uint32_t rfr = CAN_RF1R(BX_CAN1_BASE);
+
+  /* Clear flags */
+  if(IS_SET(rfr, CAN_RF1R_FOVR1)) {
+    CLEAR(CAN_RF1R(BX_CAN1_BASE), CAN_RF1R_FOVR1);
+  }
+
+  if(IS_SET(rfr, CAN_RF1R_FULL1)) {
+    CLEAR(CAN_RF1R(BX_CAN1_BASE), CAN_RF1R_FULL1);
+  }
+  
+  can1_rx_isr(1, rfr);
 }
 
 void can1_sce_isr(void) {
+  uint32_t msr = CAN_MSR(BX_CAN1_BASE);
+
+  /* Clear flags */
+  if(CAN_LAST_ERROR_CODE(msr) != 0) {
+    CLEAR(CAN_ESR(BX_CAN1_BASE), 0x70);
+  }
+  CLEAR(CAN_MSR(BX_CAN1_BASE), CAN_MSR_ERRI);
+
   can_error_handler(CAN_ESR(BX_CAN1_BASE));
+  //TODO : support sleep and wakeup
 }
 
 /* User interrupt handlers */

@@ -10,7 +10,9 @@ int main(){
   int speed = (status)?(100):(1000);
 
   static uint8_t data[8] = {0, 1, 2, 0, 0, 0, 0, 0};
-	
+
+
+  
   while(eternity){
     delay_ms(speed);
     led_toggle_status();

@@ -7,7 +7,7 @@
 #include <libopencm3/stm32/can.h>
 
 #define CAN_ENABLE_IRQ_RX_0 1
-#define CAN_ENABLE_IRQ_RX_1 0
+#define CAN_ENABLE_IRQ_RX_1 1
 #define CAN_ENABLE_IRQ_TX   0
 #define CAN_ENABLE_IRQ_ERR  0
 
@@ -58,6 +58,6 @@ typedef enum CAN_Error_Code_E{
 #define CAN_ERROR_BUSOFF(can_esr)     ((uint8_t)(((can_esr) & CAN_ESR_BOFF)     >>  2))
 #define CAN_ERROR_PASSIVE(can_esr)    ((uint8_t)(((can_esr) & CAN_ESR_EPVF)     >>  1))
 #define CAN_ERROR_WARNING(can_esr)    ((uint8_t)(((can_esr) & CAN_ESR_EWGF)     >>  0))
-#define CAN_LAST_ERROR_CODE(can_esr)  ((CAN_Error_Code) ((((can_esr) >> 2) & 0b111))
+#define CAN_LAST_ERROR_CODE(can_esr)  ((CAN_Error_Code) ((((can_esr) >> 2) & 0b111)))
 
 #endif
