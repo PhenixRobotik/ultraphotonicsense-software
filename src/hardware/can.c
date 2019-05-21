@@ -177,7 +177,8 @@ void can1_sce_isr(void) {
   if(CAN_LAST_ERROR_CODE(msr) != 0) {
     CLEAR(CAN_ESR(BX_CAN1_BASE), 0x70);
   }
-  CLEAR(CAN_MSR(BX_CAN1_BASE), CAN_MSR_ERRI);
+  // ERRI
+  CLEAR(CAN_MSR(BX_CAN1_BASE), 0x102);
 
   can_error_handler(CAN_ESR(BX_CAN1_BASE));
   //TODO : support sleep and wakeup

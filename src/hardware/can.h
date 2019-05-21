@@ -9,7 +9,7 @@
 #define CAN_ENABLE_IRQ_RX_0 1
 #define CAN_ENABLE_IRQ_RX_1 1
 #define CAN_ENABLE_IRQ_TX   0
-#define CAN_ENABLE_IRQ_ERR  0
+#define CAN_ENABLE_IRQ_ERR  1
 
 int can_setup(void);
 /**
