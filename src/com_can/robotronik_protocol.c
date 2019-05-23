@@ -42,8 +42,8 @@
 
 static uint16_t err;
 
-static void RP_FSM_INIT(RP_Interface *interface);
-static void RP_FSM_DATA(RP_Interface *interface);
+static inline void RP_FSM_INIT(RP_Interface *interface);
+static inline void RP_FSM_DATA(RP_Interface *interface);
 
 //==================================================
 //           Initialization functions
@@ -200,7 +200,7 @@ int RP_Wait_Packet(RP_Interface *interface, uint32_t timeout_ms){
  * used and the FSM is not reset, bs_count MUST be updated manually.
  */
 
-static void RP_FSM_INIT(RP_Interface *interface){
+static inline void RP_FSM_INIT(RP_Interface *interface){
   FSM_GET_BYTE(interface);
 
   // Reset FSM if the current byte is an EOF
@@ -215,7 +215,7 @@ static void RP_FSM_INIT(RP_Interface *interface){
   FSM_UPDATE(interface, RP_FSM_DATA);
 }
 
-static void RP_FSM_DATA(RP_Interface *interface){
+static inline void RP_FSM_DATA(RP_Interface *interface){
   FSM_GET_BYTE(interface);
   
   // An EOF flag means end of packet

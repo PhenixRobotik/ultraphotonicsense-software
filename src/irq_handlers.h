@@ -3,6 +3,6 @@
 
 #include "hardware/can.h"
 
-void can_error_handler(uint32_t can_esr);
+
 
 #endif

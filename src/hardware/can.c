@@ -6,6 +6,8 @@
 
 #include "common_defs.h"
 
+#include "../com_can/link_can.h"
+
 static void can_enable_irqs();
 
 int can_setup(void){
@@ -28,7 +30,7 @@ int can_setup(void){
 		     false, // Automatically wake up from sleep mode
 		     false, // No automatic retransmission (false = automatic)
 		     false, // FIFO lock function
-		     false, // FIFO priority mode (false = id priority mode)
+		     true, // FIFO priority mode (false = id priority mode)
 		     CAN_BTR_SJW_1TQ, // 1
 		     CAN_BTR_TS1_9TQ, // 9
 		     CAN_BTR_TS2_6TQ, // 6
@@ -45,6 +47,15 @@ int can_setup(void){
     // be happy :)
   }
 
+  /* Set the CAN filter */
+  #if 0
+  can_filter_id_mask_32bit_init(0,      /* Filter ID */
+				RX_CAN_ID, /* CAN ID */
+				CAN_ID_MASK,  /* ID mask */
+				CAN_RX_FIFO,      /* FIFO */
+				true);
+  #endif
+
   /* CAN filter 0 init */
   can_filter_id_mask_32bit_init(
     0,     /* Filter ID */
@@ -52,8 +63,8 @@ int can_setup(void){
     0,     /* CAN ID mask */
     0,     /* FIFO assignment (here: FIFO0) */
     true); /* Enable the filter. */
-  // TODO : understand wtf this does
 
+  
   /* Enable interrupts */
   can_enable_irqs();
   
@@ -86,7 +97,7 @@ static void can_enable_irqs() {
   // TX Interrupt
 #if CAN_ENABLE_IRQ_TX == 1
   nvic_enable_irq(NVIC_USB_HP_CAN1_TX_IRQ);
-  nvic_set_priority(NVIC_USB_HP_CAN1_TX_IRQ, 1);
+  nvic_set_priority(NVIC_USB_HP_CAN1_TX_IRQ, 2);
 
   can_enable_irq(CAN1, CAN_IER_TMEIE);
 #endif
@@ -151,7 +162,7 @@ void usb_lp_can1_rx0_isr(void) {
   if(IS_SET(rfr, CAN_RF0R_FULL0)) {
     CLEAR(CAN_RF0R(BX_CAN1_BASE), CAN_RF0R_FULL0);
   }
-  
+
   can1_rx_isr(0, rfr);
 }
 
@@ -166,7 +177,7 @@ void can1_rx1_isr(void) {
   if(IS_SET(rfr, CAN_RF1R_FULL1)) {
     CLEAR(CAN_RF1R(BX_CAN1_BASE), CAN_RF1R_FULL1);
   }
-  
+
   can1_rx_isr(1, rfr);
 }
 
