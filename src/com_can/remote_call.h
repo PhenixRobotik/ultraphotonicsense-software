@@ -28,10 +28,10 @@
 
 #define RC_NB_FUNCTIONS 32
 #define RC_MAX_DATA RP_MAX_PACKET_SIZE-1//-1 because one byte is used for id
-#define RC_FMT_SIZE 8
+#define RC_FMT_SIZE 9
 #define RC_STR_SIZE 64
-#define RC_TRANSFERT_TIMEOUT 1
-#define RC_CALL_TIMEOUT 10
+#define RC_TRANSFERT_TIMEOUT 100
+#define RC_CALL_TIMEOUT 100
 
 //GCC macro
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__

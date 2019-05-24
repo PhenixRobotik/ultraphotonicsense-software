@@ -3,6 +3,7 @@
 #include "../hardware/rcc.h"
 #include "robotronik_protocol.h"
 #include <libopencm3/stm32/can.h>
+#include "rc_server.h"
 
 /* Interface rpi */
 RP_Interface pi_iface;
@@ -13,7 +14,10 @@ void setup_com() {
 		    (void*)CAN1, // link handler unused
 		    TX_CAN_ID,   // ID of the frames to send
 		    rp_send,
-		    get_systicks);		    
+		    get_systicks);
+
+  /* Remote call server */
+  init_server();
 }
 
 void can_error_handler(uint32_t can_esr){
@@ -71,15 +75,15 @@ uint8_t rp_send(void* link_handler, uint32_t can_id, uint8_t* data, uint16_t len
     int rage = 0;
     uint16_t frame_size;
     do{
-      frame_size = (len < 4)?(len):4;
+      frame_size = (len < 8)?(len):8;
       rage = can_transmit((uint32_t)link_handler,
 			  can_id,
 			  false,
 			  false,
 			  frame_size,
 			  data);
-    }while(rage && get_systicks() < tick_ragequit);
-    if(rage){
+    }while((rage == -1) && get_systicks() < tick_ragequit);
+    if(rage == -1){
       ragequit();
     }
     len -= frame_size;
@@ -90,8 +94,9 @@ uint8_t rp_send(void* link_handler, uint32_t can_id, uint8_t* data, uint16_t len
 }
 
 void RP_Packet_Received(RP_Interface* interface, RP_Packet *packet){
-  (void)interface;
-  (void)packet;
+  if(interface == &pi_iface){
+    RC_Server_Get_Request(&server, packet);
+  }
 }
 
 void RP_Error_Handler(RP_Interface *interface, uint16_t err){
