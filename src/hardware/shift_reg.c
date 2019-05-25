@@ -4,7 +4,7 @@
 
 uint8_t shiftreg_val = 0x00;
 
-void shiftreg_shif(bool bit){
+void shiftreg_shift(bool bit){
   // Set data input
   if(bit){
     gpio_set(SHIFTREG_GPIO_DATA_PORT, SHIFTREG_GPIO_DATA_PIN);

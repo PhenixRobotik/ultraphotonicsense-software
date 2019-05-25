@@ -1,6 +1,7 @@
 #include "hardware.h"
 #include "com_can/link_can.h"
 #include "com_can/rc_server.h"
+#include "jostof.h"
 
 #define eternity 1
 
@@ -24,6 +25,7 @@ int main(){
   int status = hardware_setup();
   int speed = (status)?(100):(1000);
   setup_com();
+  init_jostof();
   
   led_off();
 
