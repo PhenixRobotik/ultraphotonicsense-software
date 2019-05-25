@@ -11,5 +11,7 @@ int hardware_setup(void){
     return -1;
   }
 
+  i2c_setup();
+
   return 0;
 }

@@ -18,7 +18,7 @@ void shiftreg_shif(bool bit){
   gpio_set(SHIFTREG_GPIO_SHIFT_PORT, SHIFTREG_GPIO_SHIFT_PIN);
 
   // Store value
-  shiftreg_val = (shifreg_val << 1) | ((bit)?1:0);
+  shiftreg_val = (shiftreg_val << 1) | ((bit)?1:0);
 }
 
 uint8_t shiftreg_value(){

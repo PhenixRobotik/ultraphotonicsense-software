@@ -4,6 +4,7 @@
 #include "rcc.h"
 #include "gpio.h"
 #include "can.h"
+#include "i2c.h"
 
 int hardware_setup(void);
 /**
