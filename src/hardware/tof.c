@@ -29,13 +29,13 @@
  */
 #include "tof.h"
 
-
-void ToF_Init_Struct(ToF_Handler *htof){
+void ToF_Init_Struct(ToF_Handler *htof, I2C_HandleTypeDef *hi2c){
+  htof->dev.I2cHandle = hi2c;
   htof->dev.I2cDevAddr = 0x52;
   htof->dev.Present = 0;
 
   //Set I2C speed to 400KHz
-  //VL53L0X_WrByte(&htof->dev, 0x88, 0x00);
+  VL53L0X_WrByte(&htof->dev, 0x88, 0x00);
 }
 
 int ToF_Poke(ToF_Dev *dev){

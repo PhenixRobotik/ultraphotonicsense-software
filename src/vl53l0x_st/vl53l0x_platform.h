@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "vl53l0x_def.h"
 #include "vl53l0x_platform_log.h"
+#include "stm32f3xx_hal.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,6 +60,7 @@ typedef struct {
 
     /*!< user specific field */
     uint8_t   I2cDevAddr;
+  I2C_HandleTypeDef *I2cHandle;
 
     char    DevLetter;
 

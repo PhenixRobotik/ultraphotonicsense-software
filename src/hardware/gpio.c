@@ -20,7 +20,8 @@ void gpio_setup() {
   gpio_mode_setup(GPIO_TOF_RESET_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,
 		  GPIO_TOF_RESET_DATA_PIN | GPIO_TOF_RESET_SHIFT_PIN);
 
-  // I2C
+  // I2C : managed by ST-HAL
+#if 0
   gpio_mode_setup(GPIO_I2C_SDA_PORT, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO_I2C_SDA_PIN);
   gpio_set_af(GPIO_I2C_SDA_PORT, GPIO_I2C_AF, GPIO_I2C_SDA_PIN);
   
@@ -29,7 +30,8 @@ void gpio_setup() {
 
   gpio_set_output_options(GPIO_I2C_SDA_PORT, GPIO_OTYPE_OD, GPIO_OSPEED_50MHZ, GPIO_I2C_SDA_PIN);
   gpio_set_output_options(GPIO_I2C_SCL_PORT, GPIO_OTYPE_OD, GPIO_OSPEED_50MHZ, GPIO_I2C_SCL_PIN);
-
+#endif
+  
   // UART
   gpio_mode_setup(GPIO_UART1_PORT, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO_UART1_RX_PIN);
   gpio_set_af(GPIO_UART1_PORT, GPIO_UART1_AF, GPIO_UART1_RX_PIN);

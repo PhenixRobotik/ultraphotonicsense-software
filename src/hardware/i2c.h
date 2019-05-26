@@ -1,6 +1,6 @@
 #ifndef I2C_H
 #define I2C_H
 
-void i2c_setup();
+int i2c_setup();
 
 #endif

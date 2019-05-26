@@ -31,7 +31,7 @@ int main(){
 
   while(eternity){
     delay_ms(speed);
-    //led_toggle_status();
+    led_toggle_status();
 
     //RC_Server_Poll(&server);
   }

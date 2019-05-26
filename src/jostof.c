@@ -26,10 +26,11 @@ void init_jostof() {
   }
 }
 
+extern I2C_HandleTypeDef hi2c1;
 static int init_tof(ToF_Handler *htof, uint8_t i2c_addr){
   ToF_Params params;
 
-  ToF_Init_Struct(htof);
+  ToF_Init_Struct(htof, &hi2c1);
  
   //Check the initial address
   if(ToF_Poke(&htof->dev) == -1)

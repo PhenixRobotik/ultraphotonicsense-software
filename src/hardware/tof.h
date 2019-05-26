@@ -31,6 +31,7 @@
 #define TOF_H
 
 #include "vl53l0x_api.h"
+#include "stm32f3xx_hal.h"
 
 #define TOF_DEFAULT_ADDR 0x52 //Fixed in hardware
 #define TOF_DELAY 10
@@ -59,7 +60,7 @@ typedef struct ToF_Params_S{
   uint8_t finalRangeVcselPeriod;
 }ToF_Params;
 
-void ToF_Init_Struct(ToF_Handler *htof);
+void ToF_Init_Struct(ToF_Handler *htof, I2C_HandleTypeDef *hi2c);
 /**
  * Init the ToF_Handler structure with the given parameters.
  */
