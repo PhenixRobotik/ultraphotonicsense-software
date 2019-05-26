@@ -5,5 +5,6 @@
 #define TOF_FIRST_ADDR 0x52
 
 void init_jostof();
+void update_jostof();
 
 #endif

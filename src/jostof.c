@@ -1,11 +1,14 @@
 #include "jostof.h"
 
+#include <libopencm3/cm3/cortex.h>
 #include "rcc.h"
 #include "tof.h"
 #include "shift_reg.h"
 #include "vl53l0x_api.h"
+#include "rc_server.h"
 
 ToF_Handler tof[NB_MAX_TOF];
+int tof_val[NB_MAX_TOF];
 
 static int init_tof(ToF_Handler *htof, uint8_t i2c_addr);
 
@@ -24,6 +27,26 @@ void init_jostof() {
       tof[i].dev.Present = 0;
     }
   }
+}
+
+void update_jostof() {
+  int i;
+  for(i = 0; i < NB_MAX_TOF; ++i){
+    ToF_Poll_Measurement_Data(&tof[i]);
+  }
+  cm_disable_interrupts();
+  for(i = 0; i < NB_MAX_TOF; ++i){
+    tof_val[i] = ToF_Get_Last_Range(&tof[i]);
+  }
+  cm_enable_interrupts();
+}
+
+void get_tof_data(RC_Server *server){
+  RC_Server_Return(server,
+		   tof_val[0],
+		   tof_val[1],
+		   tof_val[2],
+		   tof_val[3]);
 }
 
 extern I2C_HandleTypeDef hi2c1;
@@ -57,3 +80,4 @@ static int init_tof(ToF_Handler *htof, uint8_t i2c_addr){
 
   return 0;
 }
+

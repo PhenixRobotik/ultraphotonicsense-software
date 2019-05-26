@@ -25,13 +25,21 @@ int main(){
   int status = hardware_setup();
   int speed = (status)?(100):(1000);
   setup_com();
+
+  delay_ms(10);
   init_jostof();
   
   led_off();
 
+  int i = 0;
   while(eternity){
-    delay_ms(speed);
-    led_toggle_status();
+    //delay_ms(speed);
+
+    delay_ms(20);
+    if(!((++i)%10)){
+      led_toggle_status();
+    }
+    update_jostof();
 
     //RC_Server_Poll(&server);
   }

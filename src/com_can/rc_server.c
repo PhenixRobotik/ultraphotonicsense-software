@@ -8,11 +8,17 @@ int init_server(){
   RC_Server_Init(&server, &pi_iface);
 
   // Test function
-  int r = RC_Server_Add_Function(&server,
+  /*int r = RC_Server_Add_Function(&server,
 				 TEST_FUNCTION,
 				 test_function,
 				 "sbBuifFs",
 				 "sbBuifFs",
+				 RC_IMMEDIATE);*/
+  int r = RC_Server_Add_Function(&server,
+				 GET_TOF_DATA,
+				 get_tof_data,
+				 "",
+				 "iiii",
 				 RC_IMMEDIATE);
 
   if(r){
