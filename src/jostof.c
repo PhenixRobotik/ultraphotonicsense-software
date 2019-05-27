@@ -8,7 +8,7 @@
 #include "rc_server.h"
 
 ToF_Handler tof[NB_MAX_TOF];
-int tof_val[NB_MAX_TOF];
+volatile int tof_val[NB_MAX_TOF];
 
 static int init_tof(ToF_Handler *htof, uint8_t i2c_addr);
 
@@ -26,6 +26,8 @@ void init_jostof() {
     if(init_tof(&tof[i], TOF_FIRST_ADDR + 2*(i+1)) == -1){
       tof[i].dev.Present = 0;
     }
+
+    tof_val[i] = 0;
   }
 }
 

@@ -1,6 +1,7 @@
 #include "rc_server.h"
 
 #include "link_can.h"
+#include "gpio.h"
 
 RC_Server server;
 
@@ -25,10 +26,16 @@ int init_server(){
     return -1;
   }
 
-  return 0;
+  RC_Server_Add_Function(&server,
+			 GET_US_DATA,
+			 get_us_data,
+			 "",
+			 "ii",
+			 RC_IMMEDIATE);
+  
+  return r;
 }
 
-#include "../hardware/gpio.h"
 void test_function(RC_Server *server){
   char str_start[RC_STR_SIZE], str_end[RC_STR_SIZE];
   uint8_t byte;

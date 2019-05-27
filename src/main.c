@@ -2,46 +2,60 @@
 #include "com_can/link_can.h"
 #include "com_can/rc_server.h"
 #include "jostof.h"
+#include "us_sensor.h"
+#include <libopencm3/stm32/timer.h>
 
 #define eternity 1
 
 void hard_fault_handler() {
-
+  while(1);
 }
 
 void mem_manage_handler () {
-
+  while(1);
 }
 
 void bus_fault_handler () {
-
+  while(1);
 }
 
 void usage_fault_handler () {
+  while(1);
+}
 
+void restart_timer();
+volatile int a;
+void test_tim2(){
+  while(1){
+
+    a = a + 0xdeadbeef;
+    while(timer_get_counter(TIM2) < 1000);
+    while(timer_get_counter(TIM2) > 10);
+    led_toggle_status();
+  }
 }
 
 int main(){
   int status = hardware_setup();
-  int speed = (status)?(100):(1000);
+  int speed = (status)?(5):(50);
   setup_com();
 
   delay_ms(10);
   init_jostof();
+  init_us_sensors();
   
   led_off();
-
+  //test_tim2();
+  
   int i = 0;
   while(eternity){
-    //delay_ms(speed);
 
-    delay_ms(20);
-    if(!((++i)%10)){
+    //delay_ms(20);
+    if(!((++i)%speed)){
       led_toggle_status();
     }
     update_jostof();
-
-    //RC_Server_Poll(&server);
+    update_us();
   }
   
   return 0;

@@ -2,7 +2,6 @@
 #include "vl53l0x_platform.h"
 #include "vl53l0x_api.h"
 
-#include <libopencm3/stm32/i2c.h>
 #include "rcc.h"
 
 #include <string.h>
