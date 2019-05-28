@@ -69,10 +69,10 @@ void init_us_sensors(){
   sensors[1].echo_gpio_pin = GPIO_US_ECHO_1_PIN;
 #endif
   
-  sensors[1].trig_gpio_port = GPIO_US_TRIG_1_PORT;
-  sensors[1].trig_gpio_pin = GPIO_US_TRIG_1_PIN;
-  sensors[1].echo_gpio_port = GPIO_US_ECHO_1_PORT;
-  sensors[1].echo_gpio_pin = GPIO_US_ECHO_1_PIN;
+  sensors[1].trig_gpio_port = GPIO_US_TRIG_3_PORT;
+  sensors[1].trig_gpio_pin = GPIO_US_TRIG_3_PIN;
+  sensors[1].echo_gpio_port = GPIO_US_ECHO_3_PORT;
+  sensors[1].echo_gpio_pin = GPIO_US_ECHO_3_PIN;
 }
 
 // timeout 10ms -> max 1,7m

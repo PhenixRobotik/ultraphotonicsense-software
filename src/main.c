@@ -8,7 +8,8 @@
 #define eternity 1
 
 void hard_fault_handler() {
-  while(1);
+  return; //mdr
+  //while(1);
 }
 
 void mem_manage_handler () {

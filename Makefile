@@ -84,6 +84,11 @@ all: libs $(PROJECT_NAME).hex
 flash: $(PROJECT_NAME).flash
 debug: $(PROJECT_NAME).debug
 
+distf: $(PROJECT_NAME).elf
+	arm-none-eabi-gdb -ex="target remote 192.168.4.1:3333" -ex "load $(PROJECT_NAME).elf" -ex "monitor reset" -ex "set confirm off" -ex "quit"
+distgdb: $(PROJECT_NAME).elf
+	arm-none-eabi-gdb -ex="target remote 192.168.4.1:3333"  -ex "monitor reset halt" -ex "set confirm off" $(PROJECT_NAME).elf
+
 %.flash: %.hex
 	openocd -f $(OPENOCD_CFG) \
 		-c "init" \
