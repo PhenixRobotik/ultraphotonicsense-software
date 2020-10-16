@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "vl53l0x_def.h"
 #include "vl53l0x_platform_log.h"
-#include "stm32f3xx_hal.h"
+#include "vl53l0x_i2c_platform.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,7 +43,7 @@ extern "C" {
  *
  * @brief All end user OS/platform/application porting
  */
- 
+
 /**
  * @defgroup VL53L0X_platform_group VL53L0X Platform Functions
  * @brief    VL53L0X Platform Functions
@@ -59,26 +59,9 @@ typedef struct {
     VL53L0X_DevData_t Data;               /*!< embed ST Ewok Dev  data as "Data"*/
 
     /*!< user specific field */
-    uint8_t   I2cDevAddr;
-  I2C_HandleTypeDef *I2cHandle;
-
-    char    DevLetter;
-
-    int     Id;
-    int     Present;
-    int 	Enabled;
-    int		Ready;
-
-    uint8_t   comms_type;
-    uint16_t  comms_speed_khz;
-
-    int LeakyRange;
-    int LeakyFirst;
-    uint8_t RangeStatus;
-    uint8_t PreviousRangeStatus;
-    FixPoint1616_t SignalRateRtnMegaCps;
-    uint16_t EffectiveSpadRtnCount;
-    uint32_t StartTime;
+    uint8_t   I2cDevAddr;                /*!< i2c device address user specific field */
+    uint8_t   comms_type;                /*!< Type of comms : VL53L0X_COMMS_I2C or VL53L0X_COMMS_SPI */
+    uint16_t  comms_speed_khz;           /*!< Comms speed [kHz] : typically 400kHz for I2C           */
 
 } VL53L0X_Dev_t;
 
@@ -231,7 +214,7 @@ VL53L0X_Error VL53L0X_UpdateByte(VL53L0X_DEV Dev, uint8_t index, uint8_t AndData
 
 /** @} end of VL53L0X_registerAccess_group */
 
-    
+
 /**
  * @brief execute delay in all polling API call
  *
@@ -247,8 +230,6 @@ VL53L0X_Error VL53L0X_UpdateByte(VL53L0X_DEV Dev, uint8_t index, uint8_t AndData
 VL53L0X_Error VL53L0X_PollingDelay(VL53L0X_DEV Dev); /* usually best implemented as a real function */
 
 /** @} end of VL53L0X_platform_group */
-
-#define VL53L0X_COPYSTRING(str, ...) strcpy(str, ##__VA_ARGS__)
 
 #ifdef __cplusplus
 }
