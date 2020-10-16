@@ -32,3 +32,7 @@ endif
 libopencm3-clean:
 	$(MAKE) -C $(OPENCM3_DIR) clean
 
+# Edit global variables
+CFLAGS   += $(OPENCM3_CDEFS)
+INCLUDES += -I$(OPENCM3_INC)
+LDFLAGS  += -L$(OPENCM3_LIB) -l$(OPENCM3_LIBNAME)
