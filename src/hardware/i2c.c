@@ -1,4 +1,5 @@
 #include "i2c.h"
+#include "gpio.h"
 #include "utils.h"
 #include "task.h"
 
@@ -27,8 +28,8 @@ void i2c_setup()
 /* I2C communication */
 /*********************/
 
-#define i2c_enable_reload(i2c) SET_REG(I2C_CR2(i2c), I2C_CR2_RELOAD)
-#define i2c_disable_reload(i2c) CLEAR_REG(I2C_CR2(i2c), I2C_CR2_RELOAD)
+#define i2c_enable_reload(i2c) SET_BITS(I2C_CR2(i2c), I2C_CR2_RELOAD)
+#define i2c_disable_reload(i2c) CLEAR_BITS(I2C_CR2(i2c), I2C_CR2_RELOAD)
 
 enum I2C_Dir{
     I2C_READ = 0, I2C_WRITE = 1
