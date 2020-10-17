@@ -12,39 +12,23 @@ PROJECT_MK        := $(PROJECT_ROOT)/mk
 PROJECT_SRC       := $(PROJECT_ROOT)/src
 PROJECT_BIN       := $(PROJECT_ROOT)/bin
 PROJECT_LDSCRIPT  ?= $(PROJECT_ROOT)/stm32f303.ld
-PROJECT_VERBOSITY ?= 0
+V ?= 0
 
 CFLAGS   ?=
 INCLUDES ?=
 LDFLAGS  ?=
 C_SRCS   =
 
-# Libraries
-include $(PROJECT_LIBS)/libopencm3.mk
-# Adds libopencm3, libopencm3-clean targets
-# Variables :
-# OPENCM3_CDEFS                : Compiler defines required for opencm3
-# OPENCM3_INCLUDES             : Headers of opencm3
-# OPENCM3_LIB, OPENCM3_LIBNAME : path and name of opencm3
-CFLAGS   += $(OPENCM3_CDEFS)
-INCLUDES += -I$(OPENCM3_INC)
-LDFLAGS  += -L$(OPENCM3_LIB) -l$(OPENCM3_LIBNAME)
-
-# ST HAL
-CFLAGS += -DSTM32F303x8
-INCLUDES += -I$(PROJECT_SRC)/hal/CMSIS
-
-# FreeRTOS
+# Project dependencies
+include $(PROJECT_MK)/libopencm3.mk
+include $(PROJECT_MK)/libcanard.mk
 include $(PROJECT_MK)/freertos.mk
-# Add :
-# RTOS_INC : Headers for FreeRTOS
-# RTOS_SRC : Sources for FreeRTOS
-INCLUDES += $(RTOS_INC)
-#C_SRCS   += $(RTOS_SRC)
+include $(PROJECT_MK)/vl53l0x.mk
 
 # Project sources
 # Add project subdirectories (with a depth of one max, though)
 SRC_DIRS  = $(sort $(dir $(wildcard $(PROJECT_SRC)/*/)))
+SRC_DIRS += $(PROJECT_SRC)/
 C_SRCS   += $(wildcard $(addsuffix *.c,$(SRC_DIRS)))
 INCLUDES += $(addprefix -I,$(SRC_DIRS))
 
@@ -68,37 +52,17 @@ C_DEPS := $(C_OBJS:.o=.d)
 # Linker script
 LDFLAGS += -T$(PROJECT_LDSCRIPT)
 
-
 # Toolchain
 include $(PROJECT_MK)/toolchain.mk
 include $(PROJECT_MK)/rules.mk
 
-# Openocd configuration
-OPENOCD_CFG = /usr/share/openocd/scripts/board/st_nucleo_f3.cfg
-
-
-
 # Project build
 all: libs $(PROJECT_NAME).hex
 
+include $(PROJECT_MK)/bmp.mk
+
 flash: $(PROJECT_NAME).flash
 debug: $(PROJECT_NAME).debug
-
-distf: $(PROJECT_NAME).elf
-	arm-none-eabi-gdb -ex="target remote 192.168.4.1:3333" -ex "load $(PROJECT_NAME).elf" -ex "monitor reset" -ex "set confirm off" -ex "quit"
-distgdb: $(PROJECT_NAME).elf
-	arm-none-eabi-gdb -ex="target remote 192.168.4.1:3333"  -ex "monitor reset halt" -ex "set confirm off" $(PROJECT_NAME).elf
-
-%.flash: %.hex
-	openocd -f $(OPENOCD_CFG) \
-		-c "init" \
-		-c "reset init" \
-		-c "flash write_image erase $^" \
-		-c "reset" \
-		-c "shutdown"
-
-%.debug: %.elf
-	$(GDB) $^ --command=gdb/attach.gdb
 
 # Library targets
 libs: libopencm3

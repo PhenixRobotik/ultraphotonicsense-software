@@ -32,10 +32,10 @@ CXX		:= $(PREFIX)-g++
 LD		:= $(PREFIX)-gcc
 AR		:= $(PREFIX)-ar
 AS		:= $(PREFIX)-as
-OBJCOPY		:= $(PREFIX)-objcopy
-OBJDUMP		:= $(PREFIX)-objdump
+OBJCOPY	:= $(PREFIX)-objcopy
+OBJDUMP	:= $(PREFIX)-objdump
 GDB		:= $(PREFIX)-gdb
-SIZE		:= $(PREFIX)-size
+SIZE	:= $(PREFIX)-size
 
 # CCache
 ifeq (,$(shell which ccache))

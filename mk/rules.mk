@@ -48,7 +48,7 @@ CFLAGS += \
 CXXFLAGS = \
 	-fno-exceptions
 
-ifneq ($(PROJECT_VERBOSITY),1)
+ifneq ($(V),1)
 Q := @
 # Do not print "Entering directory ...".
 MAKEFLAGS += --no-print-directory
@@ -61,6 +61,8 @@ endif
 %.hex: %.elf
 	@printf "  OBJCOPY $@\n"
 	$(Q)$(OBJCOPY) -Oihex $< $@
+	@printf "  SIZE $@\n"
+	$(Q)$(SIZE) $@
 
 %.srec: %.elf
 	@printf "  OBJCOPY $@\n"
