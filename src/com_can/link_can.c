@@ -1,3 +1,4 @@
+#if 0
 #include "link_can.h"
 
 #include "../hardware/rcc.h"
@@ -103,3 +104,4 @@ void RP_Error_Handler(RP_Interface *interface, uint16_t err){
   (void)interface;
   (void)err;
 }
+#endif

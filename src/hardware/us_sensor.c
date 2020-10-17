@@ -57,9 +57,9 @@ void init_us_sensors(){
   }
   
 
-  sensors[0].trig_gpio_port = GPIO_US_TRIG_0_PORT;
+  sensors[0].trig_gpio_port = GPIO_US_PORT;
   sensors[0].trig_gpio_pin = GPIO_US_TRIG_0_PIN;
-  sensors[0].echo_gpio_port = GPIO_US_ECHO_0_PORT;
+  sensors[0].echo_gpio_port = GPIO_US_PORT;
   sensors[0].echo_gpio_pin = GPIO_US_ECHO_0_PIN;
 
 #if 0
@@ -69,9 +69,9 @@ void init_us_sensors(){
   sensors[1].echo_gpio_pin = GPIO_US_ECHO_1_PIN;
 #endif
   
-  sensors[1].trig_gpio_port = GPIO_US_TRIG_3_PORT;
+  sensors[1].trig_gpio_port = GPIO_US_PORT;
   sensors[1].trig_gpio_pin = GPIO_US_TRIG_3_PIN;
-  sensors[1].echo_gpio_port = GPIO_US_ECHO_3_PORT;
+  sensors[1].echo_gpio_port = GPIO_US_PORT;
   sensors[1].echo_gpio_pin = GPIO_US_ECHO_3_PIN;
 }
 

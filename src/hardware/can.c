@@ -4,16 +4,12 @@
 #include <libopencm3/stm32/f3/nvic.h>
 #include <libopencm3/stm32/can.h>
 
-#include "common_defs.h"
-
+#include "utils.h"
 #include "../com_can/link_can.h"
 
 static void can_enable_irqs();
 
-int can_setup(void){
-  /* Enable bxCAN clock */
-  rcc_periph_clock_enable(RCC_CAN1);
-  
+int can_setup(void){  
   /* Reset bxCAN */
   can_reset(CAN1);
 
@@ -126,15 +122,15 @@ void usb_hp_can1_tx_isr(void) {
 
   /* Clear flags */
   if(IS_SET(tsr, CAN_TSR_RQCP0)) {
-    CLEAR(CAN_TSR(BX_CAN1_BASE), CAN_TSR_RQCP0);
+    CLEAR_BITS(CAN_TSR(BX_CAN1_BASE), CAN_TSR_RQCP0);
   }
 
   if(IS_SET(tsr, CAN_TSR_RQCP1)) {
-    CLEAR(CAN_TSR(BX_CAN1_BASE), CAN_TSR_RQCP1);
+    CLEAR_BITS(CAN_TSR(BX_CAN1_BASE), CAN_TSR_RQCP1);
   }
 
   if(IS_SET(tsr, CAN_TSR_RQCP2)) {
-    CLEAR(CAN_TSR(BX_CAN1_BASE), CAN_TSR_RQCP2);
+    CLEAR_BITS(CAN_TSR(BX_CAN1_BASE), CAN_TSR_RQCP2);
   }
   
   //TODO : check if the transmission succeeded or failed
@@ -156,11 +152,11 @@ void usb_lp_can1_rx0_isr(void) {
 
   /* Clear flags */
   if(IS_SET(rfr, CAN_RF0R_FOVR0)) {
-    CLEAR(CAN_RF0R(BX_CAN1_BASE), CAN_RF0R_FOVR0);
+    CLEAR_BITS(CAN_RF0R(BX_CAN1_BASE), CAN_RF0R_FOVR0);
   }
 
   if(IS_SET(rfr, CAN_RF0R_FULL0)) {
-    CLEAR(CAN_RF0R(BX_CAN1_BASE), CAN_RF0R_FULL0);
+    CLEAR_BITS(CAN_RF0R(BX_CAN1_BASE), CAN_RF0R_FULL0);
   }
 
   can1_rx_isr(0, rfr);
@@ -171,11 +167,11 @@ void can1_rx1_isr(void) {
 
   /* Clear flags */
   if(IS_SET(rfr, CAN_RF1R_FOVR1)) {
-    CLEAR(CAN_RF1R(BX_CAN1_BASE), CAN_RF1R_FOVR1);
+    CLEAR_BITS(CAN_RF1R(BX_CAN1_BASE), CAN_RF1R_FOVR1);
   }
 
   if(IS_SET(rfr, CAN_RF1R_FULL1)) {
-    CLEAR(CAN_RF1R(BX_CAN1_BASE), CAN_RF1R_FULL1);
+    CLEAR_BITS(CAN_RF1R(BX_CAN1_BASE), CAN_RF1R_FULL1);
   }
 
   can1_rx_isr(1, rfr);
@@ -186,10 +182,10 @@ void can1_sce_isr(void) {
 
   /* Clear flags */
   if(CAN_LAST_ERROR_CODE(msr) != 0) {
-    CLEAR(CAN_ESR(BX_CAN1_BASE), 0x70);
+    CLEAR_BITS(CAN_ESR(BX_CAN1_BASE), 0x70);
   }
   // ERRI
-  CLEAR(CAN_MSR(BX_CAN1_BASE), 0x102);
+  CLEAR_BITS(CAN_MSR(BX_CAN1_BASE), 0x102);
 
   can_error_handler(CAN_ESR(BX_CAN1_BASE));
   //TODO : support sleep and wakeup

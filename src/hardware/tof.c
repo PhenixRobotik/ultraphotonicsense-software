@@ -1,3 +1,4 @@
+#if 0
 /*
  * The code below is inspired by the STMicroelectronics X-CUBE-53L0A1 example source code. Here is the license disclaimer :
  * 
@@ -185,3 +186,5 @@ int ToF_Get_Last_Range(ToF_Handler *htof){
   int r = (htof->data.RangeStatus==0)?(htof->dev.LeakyRange):0;
   return r;
 }
+
+#endif

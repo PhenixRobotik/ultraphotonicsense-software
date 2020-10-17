@@ -30,8 +30,9 @@
 #ifndef TOF_H
 #define TOF_H
 
+#if 0
+
 #include "vl53l0x_api.h"
-#include "stm32f3xx_hal.h"
 
 #define TOF_DEFAULT_ADDR 0x52 //Fixed in hardware
 #define TOF_DELAY 10
@@ -129,5 +130,7 @@ int ToF_Get_Last_Range(ToF_Handler *htof);
     params.preRangeVcselPeriod = 14;					\
     params.finalRangeVcselPeriod = 10;					\
   }
+
+#endif
 
 #endif

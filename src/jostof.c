@@ -1,3 +1,4 @@
+#if 0
 #include "jostof.h"
 
 #include <libopencm3/cm3/cortex.h>
@@ -83,3 +84,4 @@ static int init_tof(ToF_Handler *htof, uint8_t i2c_addr){
   return 0;
 }
 
+#endif
