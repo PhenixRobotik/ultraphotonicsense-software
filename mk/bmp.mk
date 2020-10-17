@@ -7,6 +7,7 @@ BMP_UART_DEB := /dev/ttyACM1
 		-ex "mon s" \
 		-ex "attach 1" \
 		-ex "load" \
+		-ex "set confirm off" \
 		-ex "quit"
 
 %.debug: %.elf
