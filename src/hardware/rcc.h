@@ -1,25 +1,13 @@
 #ifndef RCC_H
 #define RCC_H
 
-#include <stdint.h>
+#include <libopencm3/stm32/rcc.h>
 
-#define SYSTICK_FREQ_HZ   (1000U)
-#define SYSTICK_PERIOD    ((SYSTEM_CORE_CLOCK)/(SYSTICK_FREQ_HZ))
-
-#define HSI_FREQ (64000000U) // /!\ not used in rcc.c
-#define SYSTEM_CORE_CLOCK (HSI_FREQ)
-
-#define MICROS_SYSTICK_RATIO (1000000 / SYSTICK_FREQ_HZ)
-#define MILLIS_TO_SYSTICK(ms) (ms * 1000 / MICROS_SYSTICK_RATIO)
+#define HSI_FREQ 8000000U
+#define HSE_FREQ 16000000U
+#define SYSTEM_CORE_CLOCK 64000000U
+#define RCC_USE_HSE
 
 void clock_setup();
-
-uint32_t get_frequency();
-uint32_t get_systicks();
-uint32_t get_uptime_ms();
-
-void delay_ms(uint32_t ms);void clock_setup();
-
-void delay_ms(uint32_t ms);
 
 #endif
