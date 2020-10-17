@@ -42,10 +42,10 @@
  *----------------------------------------------------------*/
 
 /* Don't forget to include hardware header file for the cpu clock */
-#include "hardware.h"
-#include <stdint.h>
+#include "hardware/rcc.h"
+
 /* TODO :
- * Process a DEBUG define to enable/disable some debugging
+ * Use a DEBUG define to enable/disable some debugging
  * options
  */
 
@@ -57,8 +57,8 @@
 #define configUSE_TICKLESS_IDLE                 0
 
 #define configCPU_CLOCK_HZ			( SYSTEM_CORE_CLOCK )
-//Time resolution and scheduling frequency
-#define configTICK_RATE_HZ			(( TickType_t ) SYSTICK_FREQ_HZ )
+// Time resolution and scheduling frequency
+#define configTICK_RATE_HZ			(( TickType_t ) 100 )
 
 // Maximum number of available priorities, must be <= 32 for optimised
 // task selection
@@ -114,10 +114,10 @@
 // To run a function at each cycle of the idle task
 #define configUSE_IDLE_HOOK			0
 // Call vApplicationTickHook at each tick interrupt
-#define configUSE_TICK_HOOK			1
+#define configUSE_TICK_HOOK			0
 // Check for stack overflow at context switch (causes overhead)
 // Call vApplicationStackOverflowHook on detection
-#define configCHECK_FOR_STACK_OVERFLOW          2
+//#define configCHECK_FOR_STACK_OVERFLOW          2
 // Call vApplicationMallocFailedHook if malloc fails
 #define configUSE_MALLOC_FAILED_HOOK	        0
 // Call vApplicationDaemonTaskStartupHook when RTOS is started
@@ -201,17 +201,16 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelayUntil		1
 #define INCLUDE_vTaskDelay		1
 
-
-
-
-
-
-	
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
 standard names. */
 #define vPortSVCHandler SVC_Handler
 #define xPortPendSVHandler PendSV_Handler
 #define xPortSysTickHandler SysTick_Handler
+
+// Adapt CMSIS names to libopencm3 names
+#define SVC_Handler sv_call_handler
+#define SysTick_Handler sys_tick_handler
+#define PendSV_Handler pend_sv_handler
 
 #endif /* FREERTOS_CONFIG_H */
 
