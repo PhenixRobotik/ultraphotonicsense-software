@@ -1,11 +1,14 @@
 #include "gpio.h"
 
-void gpio_setup() {
+#include <libopencm3/stm32/timer.h>
 
+void gpio_setup() 
+{
   /* Status LED */
+  gpio_set_af(GPIO_LED_PORT, GPIO_LED_AF, GPIO_LED_PIN);
   gpio_set_output_options(GPIO_LED_PORT, GPIO_OTYPE_PP,
                           GPIO_OSPEED_2MHZ, GPIO_LED_PIN);
-  gpio_mode_setup(GPIO_LED_PORT, GPIO_MODE_OUTPUT,
+  gpio_mode_setup(GPIO_LED_PORT, GPIO_MODE_AF,
                   GPIO_PUPD_NONE, GPIO_LED_PIN);
 
   /* bxCAN */
@@ -71,16 +74,4 @@ void gpio_setup() {
   // Lock configuration
   gpio_port_config_lock(GPIOA, 0xFFFF);
   gpio_port_config_lock(GPIOB, 0xFFFF);
-}
-
-void led_on() {
-  gpio_set(GPIO_LED_PORT, GPIO_LED_PIN);
-}
-
-void led_off() {
-  gpio_clear(GPIO_LED_PORT, GPIO_LED_PIN);
-}
-
-void led_toggle_status() {
-  gpio_toggle(GPIO_LED_PORT, GPIO_LED_PIN);
 }

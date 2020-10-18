@@ -1,7 +1,6 @@
 #include "rcc.h"
 #include "i2c.h"
-
-#include <libopencm3/stm32/timer.h>
+#include "timer.h"
 
 void clock_setup()
 {
@@ -45,37 +44,7 @@ void clock_setup()
 	
 	// Delay timer
 	rcc_periph_clock_enable(TIM_DELAY_RCC);
-}
-
-void delay_setup()
-{
-	// Auto-Reload register buffering is not required
-	timer_disable_preload(TIM_DELAY);
 	
-	// Keep running on overflow
-	timer_continuous_mode(TIM_DELAY);
-	
-	// Generate an update event on overflow (not yet used)
-	timer_update_on_overflow(TIM_DELAY);
-	timer_enable_update_event(TIM_DELAY);
-	
-	// Set the prescaler to count milliseconds
-	timer_set_prescaler(TIM_DELAY, (SYSTEM_CORE_CLOCK / 1000000) - 1);
-	
-	// Use the maximum period (65 536 ms)
-	timer_set_period(TIM_DELAY, TIM_DELAY_CNTMSK);
-	
-	// Start the timer
-	timer_enable_counter(TIM_DELAY);
-}
-
-void delay_us(int n)
-{
-	uint16_t cnt_last = TIM_CNT(TIM_DELAY) & TIM_DELAY_CNTMSK;
-	while(n > 0){
-		uint16_t cnt = TIM_CNT(TIM_DELAY) & TIM_DELAY_CNTMSK;
-		uint16_t delta = cnt - cnt_last;
-		n -= delta;
-		cnt_last = cnt;
-	}
+	// LED timer
+	rcc_periph_clock_enable(TIM_LED_RCC);
 }

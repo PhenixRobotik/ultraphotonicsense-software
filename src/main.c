@@ -3,6 +3,6 @@
 
 int main()
 {
-	test_shift_reg();
+	test_blink();
 	damn();
 }

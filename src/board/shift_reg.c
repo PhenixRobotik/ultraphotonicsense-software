@@ -1,6 +1,6 @@
 #include "shift_reg.h"
 
-#include "hardware/rcc.h"
+#include "hardware/timer.h"
 
 static uint8_t shiftreg_val = 0x00;
 
@@ -16,9 +16,9 @@ void shiftreg_shift(bool bit){
 
   // Generate low-to-high clock transition
   gpio_clear(SHIFTREG_GPIO_SHIFT_PORT, SHIFTREG_GPIO_SHIFT_PIN);
-  delay_us(1);
+  usleep(1);
   gpio_set(SHIFTREG_GPIO_SHIFT_PORT, SHIFTREG_GPIO_SHIFT_PIN);
-  delay_us(1);
+  usleep(1);
 }
 
 uint8_t shiftreg_value(){

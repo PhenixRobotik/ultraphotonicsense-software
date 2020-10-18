@@ -2,6 +2,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "hardware/sys_init.h"
+#include "hardware/timer.h"
 #include "board/shift_reg.h"
 
 static TaskHandle_t taskShiftRegTst;

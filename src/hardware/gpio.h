@@ -6,6 +6,7 @@
 // Leds
 #define GPIO_LED_PORT GPIOA
 #define GPIO_LED_PIN  GPIO8
+#define GPIO_LED_AF   GPIO_AF6 // TIM1_CH1
 
 // CAN
 #define GPIO_CAN_PORT   GPIOA
@@ -58,9 +59,5 @@
 #define GPIO_SWD_AF      GPIO_AF0
 
 void gpio_setup();
-
-void led_on();
-void led_off();
-void led_toggle_status();
 
 #endif
