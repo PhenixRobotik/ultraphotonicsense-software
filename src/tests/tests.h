@@ -9,4 +9,6 @@ void test_blink();
 
 void test_shift_reg();
 
+void test_us();
+
 #endif /* TESTS_H */

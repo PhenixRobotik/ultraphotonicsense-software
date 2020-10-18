@@ -3,6 +3,6 @@
 
 int main()
 {
-	test_blink();
+	test_us();
 	damn();
 }
