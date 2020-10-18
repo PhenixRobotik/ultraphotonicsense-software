@@ -6,6 +6,7 @@
 
 int hardware_setup(void){
   clock_setup();
+  delay_setup();
   gpio_setup();
   if(can_setup() != 0){
     return -1;

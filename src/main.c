@@ -32,7 +32,7 @@ static void vTaskBlink(void *arg)
 	(void)arg;
 	
 	for( ;; ){
-		vTaskDelay(pdMS_TO_TICKS(500));
+		delay_us(500000);
 		led_toggle_status();
 	}
 }
