@@ -36,11 +36,10 @@ INCLUDES += $(addprefix -I,$(SRC_DIRS))
 C_OBJS  = $(C_SRCS:.c=.o)
 CFLAGS += $(INCLUDES)
 LDFLAGS += \
+	--specs=nano.specs \
 	-Wl,--gc-sections \
 	-nostartfiles \
 	-lm \
-	-lstdc++_nano \
-	-lc \
 	-lg \
 	-lrdimon
 

@@ -39,11 +39,9 @@ CFLAGS += \
 	-Og \
 	-fdiagnostics-color=always \
 	-Wall \
-	-Wextra
-#	-ffunction-sections \
-#	-fdata-sections \
-#	-fno-common \
-#	--static
+	-Wextra \
+	-ffunction-sections \
+	-fdata-sections
 
 CXXFLAGS = \
 	-fno-exceptions
