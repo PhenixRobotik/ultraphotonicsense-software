@@ -1,6 +1,7 @@
+#include "hardware/gpio.h"
 /**
  * @brief Exception handlers
- * 
+ * TODO manage exceptions
  */
  
 void hard_fault_handler() {
@@ -16,5 +17,11 @@ void bus_fault_handler () {
 }
 
 void usage_fault_handler () {
+  while(1);
+}
+
+void damn()
+{
+  led_on();
   while(1);
 }
