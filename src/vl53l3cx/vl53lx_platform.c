@@ -37,23 +37,15 @@
 #include <stdint.h>
 #include <string.h>
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
-
 #include "vl53lx_platform.h"
 #include <vl53lx_platform_log.h>
 
+#include "hardware/i2c.h"
+#include "hardware/timer.h"
+#include "hardware/utils.h"
+
 #define VL53LX_get_register_name(VL53LX_p_007, VL53LX_p_032)                   \
 	VL53LX_COPYSTRING(VL53LX_p_032, "");
-
-const uint32_t _power_board_in_use = 0;
-
-uint32_t _power_board_extended = 0;
-
-uint8_t global_comms_type = 0;
-
-#define VL53LX_COMMS_BUFFER_SIZE 64
 
 #define trace_print(level, ...)                                                \
 	_LOG_TRACE_PRINT(VL53LX_TRACE_MODULE_PLATFORM, level,                  \
@@ -63,60 +55,62 @@ uint8_t global_comms_type = 0;
 	_LOG_TRACE_PRINT(VL53LX_TRACE_MODULE_NONE, VL53LX_TRACE_LEVEL_NONE,    \
 			 VL53LX_TRACE_FUNCTION_I2C, ##__VA_ARGS__)
 
+static VL53LX_Error VL53LX_SendIndex(VL53LX_Dev_t *pdev, uint16_t index)
+{
+	uint8_t buff_index[2] = {
+		[0] = index >> 8,
+		[1] = index & 0xFF
+	};
+	
+	// Send index
+	I2C_Status ret =
+		i2c_master_send7(pdev->i2c_dev, pdev->i2c_slave_address,
+				 buff_index, 2, VL53LX_I2C_TIMEOUT_MS, false);
+	if(ret != I2C_OK){
+		return VL53LX_ERROR_CONTROL_INTERFACE;
+	}
+	
+	return VL53LX_ERROR_NONE;
+}
+
 VL53LX_Error VL53LX_WriteMulti(VL53LX_Dev_t *pdev, uint16_t index,
 			       uint8_t *pdata, uint32_t count)
 {
-	VL53LX_Error status = VL53LX_ERROR_NONE;
-
-	_LOG_STRING_BUFFER(register_name);
-	_LOG_STRING_BUFFER(value_as_str);
-
-	if (global_comms_type == VL53LX_I2C) {
-		// TODO
-
-		if (status != VL53LX_ERROR_NONE) {
-			trace_i2c(
-				"VL53LX_WriteMulti RANGING_SENSOR_COMMS_Write_CCI() failed\n");
-		}
-	} else if (global_comms_type == VL53LX_SPI) {
-		// unused
-	} else {
-		trace_i2c(
-			"VL53LX_WriteMulti: Comms must be one of VL53LX_I2C or VL53LX_SPI\n");
-		status = VL53LX_ERROR_CONTROL_INTERFACE;
+	VL53LX_Error status = VL53LX_SendIndex(pdev, index);
+	if(status != VL53LX_ERROR_NONE){
+		return status;
 	}
 
-	return status;
+	I2C_Status ret =
+		i2c_master_send7(pdev->i2c_dev, pdev->i2c_slave_address, pdata,
+				 count, VL53LX_I2C_TIMEOUT_MS, true);
+	if(ret != I2C_OK){
+		return VL53LX_ERROR_CONTROL_INTERFACE;
+	}
+	
+
+	return VL53LX_ERROR_NONE;
 }
 
 VL53LX_Error VL53LX_ReadMulti(VL53LX_Dev_t *pdev, uint16_t index,
 			      uint8_t *pdata, uint32_t count)
 {
-	VL53LX_Error status = VL53LX_ERROR_NONE;
-
-	_LOG_STRING_BUFFER(register_name);
-	_LOG_STRING_BUFFER(value_as_str);
-
-	if (global_comms_type == VL53LX_I2C) {
-		// TODO
-
-		if (status != VL53LX_ERROR_NONE) {
-			trace_i2c(
-				"VL53LX_ReadMulti: RANGING_SENSOR_COMMS_Read_CCI() failed\n");
-		}
-	} else if (global_comms_type == VL53LX_SPI) {
-		// unused
-	} else {
-		trace_i2c(
-			"VL53LX_ReadMulti: Comms must be one of VL53LX_I2C or VL53LX_SPI\n");
-		status = VL53LX_ERROR_CONTROL_INTERFACE;
+	VL53LX_Error status = VL53LX_SendIndex(pdev, index);
+	if(status != VL53LX_ERROR_NONE){
+		return status;
 	}
 
-	return status;
+	I2C_Status ret =
+		i2c_master_recv7(pdev->i2c_dev, pdev->i2c_slave_address, pdata,
+				 count, VL53LX_I2C_TIMEOUT_MS, true);
+	if(ret != I2C_OK){
+		return VL53LX_ERROR_CONTROL_INTERFACE;
+	}
+
+	return VL53LX_ERROR_NONE;
 }
 
-VL53LX_Error VL53LX_WrByte(VL53LX_Dev_t *pdev, uint16_t index,
-			   uint8_t data)
+VL53LX_Error VL53LX_WrByte(VL53LX_Dev_t *pdev, uint16_t index, uint8_t data)
 {
 	VL53LX_Error status = VL53LX_ERROR_NONE;
 
@@ -158,7 +152,7 @@ VL53LX_Error VL53LX_WrDWord(VL53LX_Dev_t *pdev, uint16_t index,
 VL53LX_Error VL53LX_RdByte(VL53LX_Dev_t *pdev, uint16_t index, uint8_t *pdata)
 {
 	VL53LX_Error status = VL53LX_ERROR_NONE;
-	uint8_t buffer[1] = {0};
+	uint8_t buffer[1] = { 0 };
 
 	status = VL53LX_ReadMulti(pdev, index, buffer, 1);
 
@@ -170,7 +164,7 @@ VL53LX_Error VL53LX_RdByte(VL53LX_Dev_t *pdev, uint16_t index, uint8_t *pdata)
 VL53LX_Error VL53LX_RdWord(VL53LX_Dev_t *pdev, uint16_t index, uint16_t *pdata)
 {
 	VL53LX_Error status = VL53LX_ERROR_NONE;
-	uint8_t buffer[2] = {0};
+	uint8_t buffer[2] = { 0 };
 
 	status = VL53LX_ReadMulti(pdev, index, buffer, VL53LX_BYTES_PER_WORD);
 
@@ -182,7 +176,7 @@ VL53LX_Error VL53LX_RdWord(VL53LX_Dev_t *pdev, uint16_t index, uint16_t *pdata)
 VL53LX_Error VL53LX_RdDWord(VL53LX_Dev_t *pdev, uint16_t index, uint32_t *pdata)
 {
 	VL53LX_Error status = VL53LX_ERROR_NONE;
-	uint8_t buffer[4] = {0};
+	uint8_t buffer[4] = { 0 };
 
 	status = VL53LX_ReadMulti(pdev, index, buffer, VL53LX_BYTES_PER_DWORD);
 
@@ -194,13 +188,13 @@ VL53LX_Error VL53LX_RdDWord(VL53LX_Dev_t *pdev, uint16_t index, uint32_t *pdata)
 
 VL53LX_Error VL53LX_WaitUs(VL53LX_Dev_t *pdev, int32_t wait_us)
 {
-	VL53LX_Error status = VL53LX_ERROR_NONE;
+	(void)pdev;
 
-	// TODO wait_us
+	usleep(wait_us);
 
 	trace_i2c("WaitUs(%6d);\n", wait_us);
 
-	return status;
+	return VL53LX_ERROR_NONE;
 }
 
 VL53LX_Error VL53LX_WaitMs(VL53LX_Dev_t *pdev, int32_t wait_ms)
@@ -212,7 +206,7 @@ VL53LX_Error VL53LX_GetTickCount(uint32_t *ptick_count_ms)
 {
 	VL53LX_Error status = VL53LX_ERROR_NONE;
 
-	// TODO get tick
+	*ptick_count_ms = TICKS_TO_MS(get_systick());
 
 	trace_print(VL53LX_TRACE_LEVEL_DEBUG,
 		    "VL53LX_GetTickCount() = %5u ms;\n", *ptick_count_ms);
@@ -246,7 +240,7 @@ VL53LX_Error VL53LX_WaitValueMaskEx(VL53LX_Dev_t *pdev, uint32_t timeout_ms,
 #endif
 
 	VL53LX_GetTickCount(&start_time_ms);
-	pdev->new_data_ready_poll_duration_ms = 0;
+	uint32_t elapsed = 0;
 
 #ifdef VL53LX_LOG_ENABLE
 	trace_functions = _LOG_GET_TRACE_FUNCTIONS();
@@ -254,7 +248,7 @@ VL53LX_Error VL53LX_WaitValueMaskEx(VL53LX_Dev_t *pdev, uint32_t timeout_ms,
 	_LOG_SET_TRACE_FUNCTIONS(VL53LX_TRACE_FUNCTION_NONE);
 
 	while ((status == VL53LX_ERROR_NONE) &&
-	       (pdev->new_data_ready_poll_duration_ms < timeout_ms) &&
+	       (elapsed < timeout_ms) &&
 	       (found == 0)) {
 		status = VL53LX_RdByte(pdev, index, &byte_value);
 
@@ -263,8 +257,7 @@ VL53LX_Error VL53LX_WaitValueMaskEx(VL53LX_Dev_t *pdev, uint32_t timeout_ms,
 		}
 
 		VL53LX_GetTickCount(&current_time_ms);
-		pdev->new_data_ready_poll_duration_ms =
-			current_time_ms - start_time_ms;
+		elapsed = current_time_ms - start_time_ms;
 	}
 
 	_LOG_SET_TRACE_FUNCTIONS(trace_functions);

@@ -58,7 +58,6 @@
  *******************************************************************************
  */
 
-
 #ifndef _VL53LX_PLATFORM_H_
 #define _VL53LX_PLATFORM_H_
 
@@ -68,8 +67,7 @@
 #include "vl53lx_platform_user_data.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /**
@@ -77,7 +75,6 @@ extern "C"
  *
  * @brief  All end user OS/platform/application porting
  */
-
 
 /**
  * @brief Writes the supplied byte buffer to the device
@@ -91,12 +88,8 @@ extern "C"
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_WriteMulti(
-		VL53LX_Dev_t *pdev,
-		uint16_t      index,
-		uint8_t      *pdata,
-		uint32_t      count);
-
+VL53LX_Error VL53LX_WriteMulti(VL53LX_Dev_t *pdev, uint16_t index,
+			       uint8_t *pdata, uint32_t count);
 
 /**
  * @brief  Reads the requested number of bytes from the device
@@ -110,12 +103,8 @@ VL53LX_Error VL53LX_WriteMulti(
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_ReadMulti(
-		VL53LX_Dev_t *pdev,
-		uint16_t      index,
-		uint8_t      *pdata,
-		uint32_t      count);
-
+VL53LX_Error VL53LX_ReadMulti(VL53LX_Dev_t *pdev, uint16_t index,
+			      uint8_t *pdata, uint32_t count);
 
 /**
  * @brief  Writes a single byte to the device
@@ -128,11 +117,7 @@ VL53LX_Error VL53LX_ReadMulti(
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_WrByte(
-		VL53LX_Dev_t *pdev,
-		uint16_t      index,
-		uint8_t       data);
-
+VL53LX_Error VL53LX_WrByte(VL53LX_Dev_t *pdev, uint16_t index, uint8_t data);
 
 /**
  * @brief  Writes a single word (16-bit unsigned) to the device
@@ -148,11 +133,7 @@ VL53LX_Error VL53LX_WrByte(
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_WrWord(
-		VL53LX_Dev_t *pdev,
-		uint16_t      index,
-		uint16_t      data);
-
+VL53LX_Error VL53LX_WrWord(VL53LX_Dev_t *pdev, uint16_t index, uint16_t data);
 
 /**
  * @brief  Writes a single dword (32-bit unsigned) to the device
@@ -168,12 +149,7 @@ VL53LX_Error VL53LX_WrWord(
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_WrDWord(
-		VL53LX_Dev_t *pdev,
-		uint16_t      index,
-		uint32_t      data);
-
-
+VL53LX_Error VL53LX_WrDWord(VL53LX_Dev_t *pdev, uint16_t index, uint32_t data);
 
 /**
  * @brief  Reads a single byte from the device
@@ -187,11 +163,7 @@ VL53LX_Error VL53LX_WrDWord(
  *
  */
 
-VL53LX_Error VL53LX_RdByte(
-		VL53LX_Dev_t *pdev,
-		uint16_t      index,
-		uint8_t      *pdata);
-
+VL53LX_Error VL53LX_RdByte(VL53LX_Dev_t *pdev, uint16_t index, uint8_t *pdata);
 
 /**
  * @brief  Reads a single word (16-bit unsigned) from the device
@@ -206,11 +178,7 @@ VL53LX_Error VL53LX_RdByte(
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_RdWord(
-		VL53LX_Dev_t *pdev,
-		uint16_t      index,
-		uint16_t     *pdata);
-
+VL53LX_Error VL53LX_RdWord(VL53LX_Dev_t *pdev, uint16_t index, uint16_t *pdata);
 
 /**
  * @brief  Reads a single dword (32-bit unsigned) from the device
@@ -225,12 +193,8 @@ VL53LX_Error VL53LX_RdWord(
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_RdDWord(
-		VL53LX_Dev_t *pdev,
-		uint16_t      index,
-		uint32_t     *pdata);
-
-
+VL53LX_Error VL53LX_RdDWord(VL53LX_Dev_t *pdev, uint16_t index,
+			    uint32_t *pdata);
 
 /**
  * @brief  Implements a programmable wait in us
@@ -242,10 +206,7 @@ VL53LX_Error VL53LX_RdDWord(
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_WaitUs(
-		VL53LX_Dev_t *pdev,
-		int32_t       wait_us);
-
+VL53LX_Error VL53LX_WaitUs(VL53LX_Dev_t *pdev, int32_t wait_us);
 
 /**
  * @brief  Implements a programmable wait in ms
@@ -257,9 +218,7 @@ VL53LX_Error VL53LX_WaitUs(
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_WaitMs(
-		VL53LX_Dev_t *pdev,
-		int32_t       wait_ms);
+VL53LX_Error VL53LX_WaitMs(VL53LX_Dev_t *pdev, int32_t wait_ms);
 
 /**
  * @brief Gets current system tick count in [ms]
@@ -270,9 +229,7 @@ VL53LX_Error VL53LX_WaitMs(
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_GetTickCount(
-	uint32_t *ptime_ms);
-
+VL53LX_Error VL53LX_GetTickCount(uint32_t *ptime_ms);
 
 /**
  * @brief Register "wait for value" polling routine
@@ -290,17 +247,12 @@ VL53LX_Error VL53LX_GetTickCount(
  * @return  "Other error code"    See ::VL53LX_Error
  */
 
-VL53LX_Error VL53LX_WaitValueMaskEx(
-		VL53LX_Dev_t *pdev,
-		uint32_t      timeout_ms,
-		uint16_t      index,
-		uint8_t       value,
-		uint8_t       mask,
-		uint32_t      poll_delay_ms);
+VL53LX_Error VL53LX_WaitValueMaskEx(VL53LX_Dev_t *pdev, uint32_t timeout_ms,
+				    uint16_t index, uint8_t value, uint8_t mask,
+				    uint32_t poll_delay_ms);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

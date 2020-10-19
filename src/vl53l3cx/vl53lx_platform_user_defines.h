@@ -41,7 +41,6 @@ extern "C" {
 #endif
 
 #define do_division_u(dividend, divisor) (dividend / divisor)
-
 #define do_division_s(dividend, divisor) (dividend / divisor)
 
 #define WARN_OVERRIDE_STATUS(__X__)                                            \
