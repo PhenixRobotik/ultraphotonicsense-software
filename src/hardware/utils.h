@@ -9,6 +9,7 @@
 #define IS_SET(var, bit) ((var) & (bit))
 
 #define get_systick() xTaskGetTickCount()
+#define TICKS_TO_MS(n) ((n) * portTICK_PERIOD_MS)
 #define MAX_DELAY portMAX_DELAY
 
 typedef TickType_t tick_t;
