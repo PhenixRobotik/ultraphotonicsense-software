@@ -39,6 +39,7 @@ CFLAGS += $(INCLUDES)
 LDFLAGS += \
 	--specs=nano.specs \
 	-Wl,--gc-sections \
+	-Wl,--print-memory-usage \
 	-nostartfiles \
 	-lm \
 	-lg \

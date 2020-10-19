@@ -60,7 +60,7 @@ endif
 	@printf "  OBJCOPY $@\n"
 	$(Q)$(OBJCOPY) -Oihex $< $@
 	@printf "  SIZE $@\n"
-	$(Q)$(SIZE) $@
+#	$(Q)$(SIZE) $@
 
 %.srec: %.elf
 	@printf "  OBJCOPY $@\n"
