@@ -46,10 +46,6 @@
 
 #define VL53LX_get_register_name(VL53LX_p_007,VL53LX_p_032) VL53LX_COPYSTRING(VL53LX_p_032, "");
 
-#include "ranging_sensor_comms.h"
-#include "power_board_defs.h"
-
-
 const uint32_t _power_board_in_use = 0;
 
 
@@ -58,15 +54,7 @@ uint32_t _power_board_extended = 0;
 
 uint8_t global_comms_type = 0;
 
-#define  VL53LX_COMMS_CHUNK_SIZE  56
 #define  VL53LX_COMMS_BUFFER_SIZE 64
-
-#define GPIO_INTERRUPT          RS_GPIO62
-#define GPIO_POWER_ENABLE       RS_GPIO60
-#define GPIO_XSHUTDOWN          RS_GPIO61
-#define GPIO_SPI_CHIP_SELECT    RS_GPIO51
-
-
 
 #define trace_print(level, ...) \
 	_LOG_TRACE_PRINT(VL53LX_TRACE_MODULE_PLATFORM, \
@@ -83,7 +71,6 @@ VL53LX_Error VL53LX_CommsInitialise(
 	uint16_t      comms_speed_khz)
 {
 	VL53LX_Error status = VL53LX_ERROR_NONE;
-	char comms_error_string[ERROR_TEXT_LENGTH];
 
 	SUPPRESS_UNUSED_WARNING(pdev);
 	SUPPRESS_UNUSED_WARNING(comms_speed_khz);
@@ -92,23 +79,12 @@ VL53LX_Error VL53LX_CommsInitialise(
 
 	if(global_comms_type == VL53LX_I2C)
 	{
-		if ((CP_STATUS)RANGING_SENSOR_COMMS_Init_CCI(0, 0, 0) != CP_STATUS_OK)
-		{
-			RANGING_SENSOR_COMMS_Get_Error_Text(comms_error_string);
-			trace_i2c("VL53LX_CommsInitialise: RANGING_SENSOR_COMMS_Init_CCI() failed\n");
-			trace_i2c(comms_error_string);
-			status = VL53LX_ERROR_CONTROL_INTERFACE;
-		}
+		// TODO
+		//status = VL53LX_ERROR_CONTROL_INTERFACE;
 	}
 	else if(global_comms_type == VL53LX_SPI)
 	{
-		if ((CP_STATUS)RANGING_SENSOR_COMMS_Init_SPI_V2W8(0, 0, 0) != CP_STATUS_OK)
-		{
-			RANGING_SENSOR_COMMS_Get_Error_Text(comms_error_string);
-			trace_i2c("VL53LX_CommsInitialise: RANGING_SENSOR_COMMS_Init_SPI_V2W8() failed\n");
-			trace_i2c(comms_error_string);
-			status = VL53LX_ERROR_CONTROL_INTERFACE;
-		}
+		// unused
 	}
 	else
 	{
@@ -124,29 +100,17 @@ VL53LX_Error VL53LX_CommsClose(
 	VL53LX_Dev_t *pdev)
 {
 	VL53LX_Error status = VL53LX_ERROR_NONE;
-	char comms_error_string[ERROR_TEXT_LENGTH];
 
 	SUPPRESS_UNUSED_WARNING(pdev);
 
 	if(global_comms_type == VL53LX_I2C)
 	{
-		if((CP_STATUS)RANGING_SENSOR_COMMS_Fini_CCI() != CP_STATUS_OK)
-		{
-			RANGING_SENSOR_COMMS_Get_Error_Text(comms_error_string);
-			trace_i2c("VL53LX_CommsClose: RANGING_SENSOR_COMMS_Fini_CCI() failed\n");
-			trace_i2c(comms_error_string);
-			status = VL53LX_ERROR_CONTROL_INTERFACE;
-		}
+		// TODO
+		//use VL53LX_ERROR_CONTROL_INTERFACE status on error
 	}
 	else if(global_comms_type == VL53LX_SPI)
 	{
-		if((CP_STATUS)RANGING_SENSOR_COMMS_Fini_SPI_V2W8() != CP_STATUS_OK)
-		{
-			RANGING_SENSOR_COMMS_Get_Error_Text(comms_error_string);
-			trace_i2c("VL53LX_CommsClose: RANGING_SENSOR_COMMS_Fini_SPI_V2W8() failed\n");
-			trace_i2c(comms_error_string);
-			status = VL53LX_ERROR_CONTROL_INTERFACE;
-		}
+		// unused
 	}
 	else
 	{
@@ -167,97 +131,22 @@ VL53LX_Error VL53LX_WriteMulti(
 {
 	VL53LX_Error status         = VL53LX_ERROR_NONE;
 	uint32_t     position       = 0;
-	uint32_t     data_size      = 0;
-
-	char   comms_error_string[ERROR_TEXT_LENGTH];
 
 	_LOG_STRING_BUFFER(register_name);
 	_LOG_STRING_BUFFER(value_as_str);
 
 	if(global_comms_type == VL53LX_I2C)
 	{
-		for(position=0; position<count; position+=VL53LX_COMMS_CHUNK_SIZE)
-		{
-			if (count > VL53LX_COMMS_CHUNK_SIZE)
-			{
-				if((position + VL53LX_COMMS_CHUNK_SIZE) > count)
-				{
-					data_size = count - position;
-				}
-				else
-				{
-					data_size = VL53LX_COMMS_CHUNK_SIZE;
-				}
-			}
-			else
-			{
-				data_size = count;
-			}
-
-			if (status == VL53LX_ERROR_NONE)
-			{
-				if( RANGING_SENSOR_COMMS_Write_CCI(
-								pdev->i2c_slave_address,
-								0,
-								index+position,
-								pdata+position,
-								data_size) != 0 )
-				{
-					status = VL53LX_ERROR_CONTROL_INTERFACE;
-				}
-			}
-
-#ifdef VL53LX_LOG_ENABLE
-			if (status == VL53LX_ERROR_NONE) {
-				char* pvalue_as_str;
-				uint32_t i;
-
-
-
-
-
-				pvalue_as_str =  value_as_str;
-				for(i = 0 ; i < data_size ; i++)
-				{
-						sprintf(pvalue_as_str, ", 0x%02X", *(pdata+position+i));
-						pvalue_as_str = pvalue_as_str + 6;
-				}
-
-				register_name[0] = 0;
-				VL53LX_get_register_name(
-						index+(uint16_t)position,
-						register_name);
-
-				trace_i2c(
-
-						"WriteAutoIncrement(%s%s); // %3u bytes\n",
-						register_name,
-						value_as_str,
-						data_size);
-			}
-#endif
-		}
+		// TODO
 
 		if(status != VL53LX_ERROR_NONE)
 		{
-			RANGING_SENSOR_COMMS_Get_Error_Text(comms_error_string);
 			trace_i2c("VL53LX_WriteMulti RANGING_SENSOR_COMMS_Write_CCI() failed\n");
-			trace_i2c(comms_error_string);
 		}
 	}
 	else if(global_comms_type == VL53LX_SPI)
 	{
-		if((CP_STATUS)RANGING_SENSOR_COMMS_Write_SPI_16I(0, 0, index, pdata, count) != CP_STATUS_OK)
-		{
-			status = VL53LX_ERROR_CONTROL_INTERFACE;
-		}
-
-		if(status != VL53LX_ERROR_NONE)
-		{
-			RANGING_SENSOR_COMMS_Get_Error_Text(comms_error_string);
-			trace_i2c("VL53LX_WriteMulti RANGING_SENSOR_COMMS_Write_SPI_16I() failed\n");
-			trace_i2c(comms_error_string);
-		}
+		// unused
 	}
 	else
 	{
@@ -279,95 +168,21 @@ VL53LX_Error VL53LX_ReadMulti(
 	uint32_t     position       = 0;
 	uint32_t     data_size      = 0;
 
-	char   comms_error_string[ERROR_TEXT_LENGTH];
-
 	_LOG_STRING_BUFFER(register_name);
 	_LOG_STRING_BUFFER(value_as_str);
 
 	if(global_comms_type == VL53LX_I2C)
 	{
-		for(position=0; position<count; position+=VL53LX_COMMS_CHUNK_SIZE)
-		{
-			if(count > VL53LX_COMMS_CHUNK_SIZE)
-			{
-				if((position + VL53LX_COMMS_CHUNK_SIZE) > count)
-				{
-					data_size = count - position;
-				}
-				else
-				{
-					data_size = VL53LX_COMMS_CHUNK_SIZE;
-				}
-			}
-			else
-				data_size = count;
-
-			if(status == VL53LX_ERROR_NONE)
-			{
-				if( RANGING_SENSOR_COMMS_Read_CCI(
-								pdev->i2c_slave_address,
-								0,
-								index+position,
-								pdata+position,
-								data_size) != 0 )
-				{
-					status = VL53LX_ERROR_CONTROL_INTERFACE;
-				}
-			}
-#ifdef VL53LX_LOG_ENABLE
-			if(status == VL53LX_ERROR_NONE)
-			{
-				char* pvalue_as_str;
-				uint32_t i;
-
-
-
-				pvalue_as_str =  value_as_str;
-				for(i = 0 ; i < data_size ; i++) {
-					sprintf(pvalue_as_str, "0x%02X", *(pdata+position+i));
-					if (i == 0) {
-						pvalue_as_str = pvalue_as_str + 4;
-					}
-					else {
-						pvalue_as_str = pvalue_as_str + 6;
-					}
-				}
-
-				register_name[0] = 0;
-				VL53LX_get_register_name(
-						index+(uint16_t)position,
-						register_name);
-
-				trace_i2c(
-
-						"ReadAutoIncrement(%s,%3u); // = (%s)\n",
-						register_name,
-						data_size,
-						value_as_str);
-			}
-#endif
-		}
+		// TODO
 
 		if(status != VL53LX_ERROR_NONE)
 		{
-			RANGING_SENSOR_COMMS_Get_Error_Text(comms_error_string);
 			trace_i2c("VL53LX_ReadMulti: RANGING_SENSOR_COMMS_Read_CCI() failed\n");
-			trace_i2c(comms_error_string);
 		}
 	}
 	else if(global_comms_type == VL53LX_SPI)
 	{
-		if((CP_STATUS)RANGING_SENSOR_COMMS_Read_SPI_16I(0, 0, index, pdata, count) != CP_STATUS_OK)
-		{
-			status = VL53LX_ERROR_CONTROL_INTERFACE;
-		}
-
-		if(status != VL53LX_ERROR_NONE)
-		{
-			RANGING_SENSOR_COMMS_Get_Error_Text(comms_error_string);
-			trace_i2c("VL53LX_ReadMulti: RANGING_SENSOR_COMMS_Read_SPI_16I() failed\n");
-			trace_i2c(comms_error_string);
-		}
+		// unused
 	}
 	else
 	{
@@ -497,13 +312,7 @@ VL53LX_Error VL53LX_WaitUs(
 {
 	VL53LX_Error status         = VL53LX_ERROR_NONE;
 
-	float wait_ms = (float)wait_us/1000.0f;
-	HANDLE hEvent = CreateEvent(0, TRUE, FALSE, 0);
-
-	SUPPRESS_UNUSED_WARNING(pdev);
-
-
-	WaitForSingleObject(hEvent, (DWORD)(wait_ms + 0.5f));
+	// TODO wait_us
 
 	trace_i2c("WaitUs(%6d);\n", wait_us);
 
@@ -544,10 +353,7 @@ VL53LX_Error VL53LX_GpioSetMode(uint8_t pin, uint8_t mode)
 {
 	VL53LX_Error status         = VL53LX_ERROR_NONE;
 
-	if((CP_STATUS)RANGING_SENSOR_COMMS_GPIO_Set_Mode((RS_GPIO_Pin)pin, (RS_GPIO_Mode)mode) != CP_STATUS_OK)
-	{
-		status = VL53LX_ERROR_CONTROL_INTERFACE;
-	}
+	// TODO
 
 	trace_print(VL53LX_TRACE_LEVEL_INFO, "VL53LX_GpioSetMode: Status %d. Pin %d, Mode %d\n", status, pin, mode);
 	return status;
@@ -558,10 +364,7 @@ VL53LX_Error  VL53LX_GpioSetValue(uint8_t pin, uint8_t value)
 {
 	VL53LX_Error status         = VL53LX_ERROR_NONE;
 
-	if((CP_STATUS)RANGING_SENSOR_COMMS_GPIO_Set_Value((RS_GPIO_Pin)pin, value) != CP_STATUS_OK)
-	{
-		status = VL53LX_ERROR_CONTROL_INTERFACE;
-	}
+	// TODO
 
 	trace_print(VL53LX_TRACE_LEVEL_INFO, "VL53LX_GpioSetValue: Status %d. Pin %d, Mode %d\n", status, pin, value);
 	return status;
@@ -573,16 +376,7 @@ VL53LX_Error  VL53LX_GpioGetValue(uint8_t pin, uint8_t *pvalue)
 {
 	VL53LX_Error status         = VL53LX_ERROR_NONE;
 
-	DWORD value = 0;
-
-	if((CP_STATUS)RANGING_SENSOR_COMMS_GPIO_Get_Value((RS_GPIO_Pin)pin, &value) != CP_STATUS_OK)
-	{
-		status = VL53LX_ERROR_CONTROL_INTERFACE;
-	}
-	else
-	{
-		*pvalue = (uint8_t)value;
-	}
+	// TODO
 
 	trace_print(VL53LX_TRACE_LEVEL_INFO, "VL53LX_GpioGetValue: Status %d. Pin %d, Mode %d\n", status, pin, *pvalue);
 	return status;
@@ -596,24 +390,19 @@ VL53LX_Error  VL53LX_GpioXshutdown(uint8_t value)
 
 	if(status == VL53LX_ERROR_NONE)
 	{
-		status = VL53LX_GpioSetMode((uint8_t)GPIO_XSHUTDOWN, (uint8_t)GPIO_OutputPP);
+		// TODO set mode
+		//status = VL53LX_GpioSetMode((uint8_t)GPIO_XSHUTDOWN, (uint8_t)GPIO_OutputPP);
 	}
 
 	if(status == VL53LX_ERROR_NONE)
 	{
 		if(value)
 		{
-			if ((CP_STATUS)RANGING_SENSOR_COMMS_GPIO_Set_Value(GPIO_XSHUTDOWN, (DWORD)Pin_State_High) != CP_STATUS_OK)
-			{
-				status = VL53LX_ERROR_CONTROL_INTERFACE;
-			}
+			// TODO set high
 		}
 		else
 		{
-			if ((CP_STATUS)RANGING_SENSOR_COMMS_GPIO_Set_Value(GPIO_XSHUTDOWN, (DWORD)Pin_State_Low) != CP_STATUS_OK)
-			{
-				status = VL53LX_ERROR_CONTROL_INTERFACE;
-			}
+			// TODO set low
 		}
 	}
 
@@ -628,24 +417,18 @@ VL53LX_Error  VL53LX_GpioCommsSelect(uint8_t value)
 
 	if(status == VL53LX_ERROR_NONE)
 	{
-		status = VL53LX_GpioSetMode((uint8_t)GPIO_SPI_CHIP_SELECT, (uint8_t)GPIO_OutputPP);
+		// unused (set GPIO mode)
 	}
 
 	if(status == VL53LX_ERROR_NONE)
 	{
 		if(value)
 		{
-			if((CP_STATUS)RANGING_SENSOR_COMMS_GPIO_Set_Value(GPIO_SPI_CHIP_SELECT, (DWORD)Pin_State_High) != CP_STATUS_OK)
-			{
-				status = VL53LX_ERROR_CONTROL_INTERFACE;
-			}
+			// unused (SPI chip select)
 		}
 		else
 		{
-			if((CP_STATUS)RANGING_SENSOR_COMMS_GPIO_Set_Value(GPIO_SPI_CHIP_SELECT, (DWORD)Pin_State_Low) != CP_STATUS_OK)
-			{
-				status = VL53LX_ERROR_CONTROL_INTERFACE;
-			}
+			// unused
 		}
 	}
 
@@ -657,44 +440,8 @@ VL53LX_Error  VL53LX_GpioCommsSelect(uint8_t value)
 VL53LX_Error  VL53LX_GpioPowerEnable(uint8_t value)
 {
 	VL53LX_Error status         = VL53LX_ERROR_NONE;
-	POWER_BOARD_CMD power_cmd;
-
-	if(status == VL53LX_ERROR_NONE)
-	{
-		status = VL53LX_GpioSetMode((uint8_t)GPIO_POWER_ENABLE, (uint8_t)GPIO_OutputPP);
-	}
-
-	if(status == VL53LX_ERROR_NONE)
-	{
-		if(value)
-		{
-			if((CP_STATUS)RANGING_SENSOR_COMMS_GPIO_Set_Value(GPIO_POWER_ENABLE, (DWORD)Pin_State_High) != CP_STATUS_OK)
-			{
-				status = VL53LX_ERROR_CONTROL_INTERFACE;
-			}
-		}
-		else
-		{
-			if((CP_STATUS)RANGING_SENSOR_COMMS_GPIO_Set_Value(GPIO_POWER_ENABLE, (DWORD)Pin_State_Low) != CP_STATUS_OK)
-			{
-				status = VL53LX_ERROR_CONTROL_INTERFACE;
-			}
-		}
-	}
-
-	if(status == VL53LX_ERROR_NONE && _power_board_in_use == 1 && value)
-	{
-		memset(&power_cmd, 0, sizeof(POWER_BOARD_CMD));
-		power_cmd.command = ENABLE_DUT_POWER;
-
-		if((CP_STATUS)RANGING_SENSOR_COMMS_Write_System_I2C(
-			POWER_BOARD_I2C_ADDRESS, sizeof(POWER_BOARD_CMD), (uint8_t*)&power_cmd) != CP_STATUS_OK)
-		{
-			status = VL53LX_ERROR_CONTROL_INTERFACE;
-		}
-	}
-
-	trace_print(VL53LX_TRACE_LEVEL_INFO, "VL53LX_GpioPowerEnable: Status %d. Value %d\n", status, value);
+	(void)value;
+	// Unused
 	return status;
 }
 
@@ -726,7 +473,7 @@ VL53LX_Error VL53LX_GetTickCount(
 
 	VL53LX_Error status  = VL53LX_ERROR_NONE;
 
-	*ptick_count_ms = timeGetTime();
+	// TODO get tick
 
 	trace_print(
 	VL53LX_TRACE_LEVEL_DEBUG,
