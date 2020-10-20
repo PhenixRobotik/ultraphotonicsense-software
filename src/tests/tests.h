@@ -11,4 +11,6 @@ void test_shift_reg();
 
 void test_us();
 
+void test_i2c();
+
 #endif /* TESTS_H */

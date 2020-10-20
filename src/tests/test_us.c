@@ -39,7 +39,7 @@ static uint16_t get_us_dist()
     uint16_t rise_time = 0;
     uint8_t h_cnt = 0;
     uint8_t l_cnt = 0;
-    for(time_us = 0; time_us < 65535; time_us++){
+    for(time_us = 0; time_us < 32768; time_us++){
         if(gpio_port_read(GPIO_US_PORT) & GPIO_US_ECHO_3_PIN){
             l_cnt = 0;
             h_cnt++;
@@ -71,16 +71,11 @@ static void vTaskUSTst(void *arg)
     led_set_brightness(0);
     led_on();
 	for( ;; ){
-        uint16_t pulse_min = 0xFFFF;
-        for(int i = 0; i < 10; ++i){
-            uint16_t pulse = get_us_dist();
-            if(pulse < pulse_min)
-                pulse_min = pulse;
-            usleep(60000);
-        }
-        float d = pulse_min * ULTRASONIC_CM_PER_USEC;
+        uint16_t pulse = get_us_dist();
+        float d = pulse * ULTRASONIC_CM_PER_USEC;
         float b_led = 256 - d;
         if(b_led < 0) b_led = 0;
         led_set_brightness(b_led);
+        usleep(60000-pulse);
 	}
 }

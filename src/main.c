@@ -3,6 +3,6 @@
 
 int main()
 {
-	test_us();
+	test_i2c();
 	damn();
 }
