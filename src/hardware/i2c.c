@@ -214,7 +214,9 @@ static uint8_t i2c_master_start7(uint32_t i2c, uint8_t addr, size_t n, enum I2C_
     
     uint8_t nbytes = i2c_set_nbytes(i2c, n);
     
-    // NACK is supposed to be cleared
+    // Clear any old NACK
+    I2C_ICR(i2c) = I2C_ICR_NACKCF;
+    
     i2c_send_start(i2c);
     /*
      * Checking for a busy bus condition before START is useless because the
@@ -231,7 +233,6 @@ static uint8_t i2c_master_start7(uint32_t i2c, uint8_t addr, size_t n, enum I2C_
      * AUTOEND mode is set after start to avoid sending a stop if the user wants
      * a restart
      */
-    
     
     return nbytes;
 }
@@ -250,6 +251,11 @@ static I2C_Status i2c_wait_end(uint32_t i2c, bool stop, tick_t t_start, tick_t t
             return I2C_ETIME;
         }
         // The flag will be cleared with a future STOP or START
+    }
+    
+    if(i2c_nack(i2c)){
+        I2C_ICR(i2c) = I2C_ICR_NACKCF;
+        return I2C_ENACK;
     }
     
     return I2C_OK;
