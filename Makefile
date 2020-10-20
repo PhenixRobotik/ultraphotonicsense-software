@@ -23,12 +23,12 @@ C_SRCS   =
 include $(PROJECT_MK)/libopencm3.mk
 include $(PROJECT_MK)/libcanard.mk
 include $(PROJECT_MK)/freertos.mk
-include $(PROJECT_MK)/vl53l3cx.mk
+include $(PROJECT_MK)/vl53l0x.mk
 
 # Project sources
 # Add project subdirectories (with a depth of one max, though)
 #SRC_DIRS  = $(sort $(dir $(wildcard $(PROJECT_SRC)/*/)))
-SRC_DIRS = src/board src/hardware src/tests src/vl53l3cx
+SRC_DIRS = src/board src/hardware src/tests src/vl53l0x
 SRC_DIRS += $(PROJECT_SRC)
 C_SRCS   += $(wildcard $(addsuffix /*.c,$(SRC_DIRS)))
 INCLUDES += $(addprefix -I,$(SRC_DIRS))
