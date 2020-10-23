@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright © 2016, STMicroelectronics International N.V.
+ Copyright ï¿½ 2016, STMicroelectronics International N.V.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -236,11 +236,11 @@ VL53L0X_Error VL53L0X_GetPowerMode(VL53L0X_DEV Dev, VL53L0X_PowerModes *pPowerMo
 
 	if (Status == VL53L0X_ERROR_NONE) {
 		if (Byte == 1) {
-			PALDevDataSet(Dev, PowerMode,
-				VL53L0X_POWERMODE_IDLE_LEVEL1);
+			*pPowerMode = VL53L0X_POWERMODE_IDLE_LEVEL1;
+			PALDevDataSet(Dev, PowerMode, *pPowerMode);
 		} else {
-			PALDevDataSet(Dev, PowerMode,
-				VL53L0X_POWERMODE_STANDBY_LEVEL1);
+			*pPowerMode = VL53L0X_POWERMODE_STANDBY_LEVEL1;
+			PALDevDataSet(Dev, PowerMode, *pPowerMode);
 		}
 	}
 
@@ -314,6 +314,8 @@ VL53L0X_Error VL53L0X_SetGroupParamHold(VL53L0X_DEV Dev, uint8_t GroupParamHold)
 	VL53L0X_Error Status = VL53L0X_ERROR_NOT_IMPLEMENTED;
 	LOG_FUNCTION_START("");
 
+	(void)Dev;
+	(void)GroupParamHold;
 	/* not implemented on VL53L0X */
 
 	LOG_FUNCTION_END(Status);
@@ -326,6 +328,8 @@ VL53L0X_Error VL53L0X_GetUpperLimitMilliMeter(VL53L0X_DEV Dev,
 	VL53L0X_Error Status = VL53L0X_ERROR_NOT_IMPLEMENTED;
 	LOG_FUNCTION_START("");
 
+	(void)Dev;
+	(void)pUpperLimitMilliMeter;
 	/* not implemented on VL53L0X */
 
 	LOG_FUNCTION_END(Status);
@@ -731,6 +735,7 @@ VL53L0X_Error VL53L0X_WaitDeviceBooted(VL53L0X_DEV Dev)
 	VL53L0X_Error Status = VL53L0X_ERROR_NOT_IMPLEMENTED;
 	LOG_FUNCTION_START("");
 
+	(void)Dev;
 	/* not implemented on VL53L0X */
 
 	LOG_FUNCTION_END(Status);
@@ -968,6 +973,8 @@ VL53L0X_Error VL53L0X_SetHistogramMode(VL53L0X_DEV Dev,
 	VL53L0X_Error Status = VL53L0X_ERROR_NOT_IMPLEMENTED;
 	LOG_FUNCTION_START("");
 
+	(void)Dev;
+	(void)HistogramMode;
 	/* not implemented on VL53L0X */
 
 	LOG_FUNCTION_END(Status);
@@ -980,6 +987,8 @@ VL53L0X_Error VL53L0X_GetHistogramMode(VL53L0X_DEV Dev,
 	VL53L0X_Error Status = VL53L0X_ERROR_NOT_IMPLEMENTED;
 	LOG_FUNCTION_START("");
 
+	(void)Dev;
+	(void)pHistogramMode;
 	/* not implemented on VL53L0X */
 
 	LOG_FUNCTION_END(Status);
@@ -1132,6 +1141,8 @@ VL53L0X_Error sequence_step_enabled(VL53L0X_DEV Dev,
 	VL53L0X_SequenceStepId SequenceStepId, uint8_t SequenceConfig,
 	uint8_t *pSequenceStepEnabled)
 {
+	(void)Dev;
+	
 	VL53L0X_Error Status = VL53L0X_ERROR_NONE;
 	*pSequenceStepEnabled = 0;
 	LOG_FUNCTION_START("");
@@ -1222,6 +1233,8 @@ VL53L0X_Error VL53L0X_GetSequenceStepEnables(VL53L0X_DEV Dev,
 VL53L0X_Error VL53L0X_GetNumberOfSequenceSteps(VL53L0X_DEV Dev,
 	uint8_t *pNumberOfSequenceSteps)
 {
+	(void)Dev;
+	
 	VL53L0X_Error Status = VL53L0X_ERROR_NONE;
 	LOG_FUNCTION_START("");
 
@@ -1793,7 +1806,7 @@ VL53L0X_Error VL53L0X_GetLimitCheckValue(VL53L0X_DEV Dev, uint16_t LimitCheckId,
 	VL53L0X_Error Status = VL53L0X_ERROR_NONE;
 	uint8_t EnableZeroValue = 0;
 	uint16_t Temp16;
-	FixPoint1616_t TempFix1616;
+	FixPoint1616_t TempFix1616 = 0;
 
 	LOG_FUNCTION_START("");
 
@@ -2098,6 +2111,8 @@ VL53L0X_Error VL53L0X_PerformSingleHistogramMeasurement(VL53L0X_DEV Dev,
 	VL53L0X_Error Status = VL53L0X_ERROR_NOT_IMPLEMENTED;
 	LOG_FUNCTION_START("");
 
+	(void)Dev;
+	(void)pHistogramMeasurementData;
 	/* not implemented on VL53L0X */
 
 	LOG_FUNCTION_END(Status);
@@ -2124,6 +2139,10 @@ VL53L0X_Error VL53L0X_PerformXTalkMeasurement(VL53L0X_DEV Dev,
 	VL53L0X_Error Status = VL53L0X_ERROR_NOT_IMPLEMENTED;
 	LOG_FUNCTION_START("");
 
+	(void)Dev;
+	(void)TimeoutMs;
+	(void)pXtalkPerSpad,
+	(void)pAmbientTooHigh,
 	/* not implemented on VL53L0X */
 
 	LOG_FUNCTION_END(Status);
@@ -2354,6 +2373,8 @@ VL53L0X_Error VL53L0X_WaitDeviceReadyForNewMeasurement(VL53L0X_DEV Dev,
 	VL53L0X_Error Status = VL53L0X_ERROR_NOT_IMPLEMENTED;
 	LOG_FUNCTION_START("");
 
+	(void)Dev;
+	(void)MaxLoop;
 	/* not implemented for VL53L0X */
 
 	LOG_FUNCTION_END(Status);
@@ -2542,6 +2563,9 @@ VL53L0X_Error VL53L0X_GetHistogramMeasurementData(VL53L0X_DEV Dev,
 	VL53L0X_Error Status = VL53L0X_ERROR_NOT_IMPLEMENTED;
 	LOG_FUNCTION_START("");
 
+	(void)Dev;
+	(void)pHistogramMeasurementData;
+
 	LOG_FUNCTION_END(Status);
 	return Status;
 }
@@ -2583,7 +2607,7 @@ VL53L0X_Error VL53L0X_SetNumberOfROIZones(VL53L0X_DEV Dev,
 
 	if (NumberOfROIZones != 1)
 		Status = VL53L0X_ERROR_INVALID_PARAMS;
-
+	(void)Dev;
 
 	LOG_FUNCTION_END(Status);
 	return Status;
@@ -2597,6 +2621,7 @@ VL53L0X_Error VL53L0X_GetNumberOfROIZones(VL53L0X_DEV Dev,
 	LOG_FUNCTION_START("");
 
 	*pNumberOfROIZones = 1;
+	(void)Dev;
 
 	LOG_FUNCTION_END(Status);
 	return Status;
@@ -2610,6 +2635,7 @@ VL53L0X_Error VL53L0X_GetMaxNumberOfROIZones(VL53L0X_DEV Dev,
 	LOG_FUNCTION_START("");
 
 	*pMaxNumberOfROIZones = 1;
+	(void)Dev;
 
 	LOG_FUNCTION_END(Status);
 	return Status;
@@ -2792,6 +2818,7 @@ VL53L0X_Error VL53L0X_SetInterruptThresholds(VL53L0X_DEV Dev,
 	LOG_FUNCTION_START("");
 
 	/* no dependency on DeviceMode for Ewok */
+	(void)DeviceMode;
 	/* Need to divide by 2 because the FW will apply a x2 */
 	Threshold16 = (uint16_t)((ThresholdLow >> 17) & 0x00fff);
 	Status = VL53L0X_WrWord(Dev, VL53L0X_REG_SYSTEM_THRESH_LOW, Threshold16);
@@ -2816,6 +2843,7 @@ VL53L0X_Error VL53L0X_GetInterruptThresholds(VL53L0X_DEV Dev,
 	LOG_FUNCTION_START("");
 
 	/* no dependency on DeviceMode for Ewok */
+	(void)DeviceMode;
 
 	Status = VL53L0X_RdWord(Dev, VL53L0X_REG_SYSTEM_THRESH_LOW, &Threshold16);
 	/* Need to multiply by 2 because the FW will apply a x2 */
@@ -2868,6 +2896,7 @@ VL53L0X_Error VL53L0X_GetStopCompletedStatus(VL53L0X_DEV Dev,
 /* Group PAL Interrupt Functions */
 VL53L0X_Error VL53L0X_ClearInterruptMask(VL53L0X_DEV Dev, uint32_t InterruptMask)
 {
+	(void)InterruptMask;
 	VL53L0X_Error Status = VL53L0X_ERROR_NONE;
 	uint8_t LoopCount;
 	uint8_t Byte;
@@ -2917,6 +2946,8 @@ VL53L0X_Error VL53L0X_EnableInterruptMask(VL53L0X_DEV Dev, uint32_t InterruptMas
 	VL53L0X_Error Status = VL53L0X_ERROR_NOT_IMPLEMENTED;
 	LOG_FUNCTION_START("");
 
+	(void)Dev;
+	(void)InterruptMask;
 	/* not implemented for VL53L0X */
 
 	LOG_FUNCTION_END(Status);

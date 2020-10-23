@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright © 2016, STMicroelectronics International N.V.
+ Copyright ï¿½ 2016, STMicroelectronics International N.V.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -477,6 +477,7 @@ VL53L0X_Error VL53L0X_get_info_from_device(VL53L0X_DEV Dev, uint8_t option)
 
 uint32_t VL53L0X_calc_macro_period_ps(VL53L0X_DEV Dev, uint8_t vcsel_period_pclks)
 {
+	(void)Dev;
 	uint64_t PLL_period_ps;
 	uint32_t macro_period_vclks;
 	uint32_t macro_period_ps;
@@ -1872,7 +1873,7 @@ VL53L0X_Error VL53L0X_calc_sigma_estimate(VL53L0X_DEV Dev,
 		diff1_mcps <<= 8;
 
 		/* FixPoint0824/FixPoint1616 = FixPoint2408 */
-		xTalkCorrection	 = abs(diff1_mcps/diff2_mcps);
+		xTalkCorrection	 = diff1_mcps/diff2_mcps;
 
 		/* FixPoint2408 << 8 = FixPoint1616 */
 		xTalkCorrection <<= 8;
