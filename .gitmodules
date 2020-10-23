@@ -7,3 +7,6 @@
 [submodule "lib/libcanard"]
 	path = lib/libcanard
 	url = https://github.com/UAVCAN/libcanard.git
+[submodule "lib/o1heap"]
+	path = lib/o1heap
+	url = https://github.com/pavel-kirienko/o1heap.git

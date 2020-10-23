@@ -23,6 +23,7 @@ C_SRCS   =
 include $(PROJECT_MK)/libopencm3.mk
 include $(PROJECT_MK)/libcanard.mk
 include $(PROJECT_MK)/freertos.mk
+include $(PROJECT_MK)/o1heap.mk
 include $(PROJECT_MK)/vl53l0x.mk
 
 # Project sources
