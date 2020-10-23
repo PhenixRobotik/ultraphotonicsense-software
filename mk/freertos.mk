@@ -20,7 +20,7 @@ RTOS_INC  := $(addprefix -I,$(RTOS_INC))
 # Sources
 RTOS_SRC  := $(wildcard $(RTOS_DIR)/*.c)
 RTOS_SRC  += $(RTOS_PORT)/port.c
-RTOS_SRC  += $(RTOS_MEMMANG)/heap_$(RTOS_HEAP).c
+#RTOS_SRC  += $(RTOS_MEMMANG)/heap_$(RTOS_HEAP).c
 
 # Edit global variables
 INCLUDES += $(RTOS_INC)
