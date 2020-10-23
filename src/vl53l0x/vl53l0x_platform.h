@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright © 2015, STMicroelectronics International N.V.
+Copyright ï¿½ 2015, STMicroelectronics International N.V.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,11 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "vl53l0x_def.h"
 #include "vl53l0x_platform_log.h"
-#include "vl53l0x_i2c_platform.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define VL53L0X_DELAY_US 1000
+#define VL53L0X_I2C_TIMEOUT_MS 10
 
 /**
  * @file vl53l0x_platform.h
@@ -50,6 +52,7 @@ extern "C" {
  *  @{
  */
 
+typedef uint32_t i2c_dev_t;
 /**
  * @struct  VL53L0X_Dev_t
  * @brief    Generic PAL device type that does link between API and platform abstraction layer
@@ -59,10 +62,8 @@ typedef struct {
     VL53L0X_DevData_t Data;               /*!< embed ST Ewok Dev  data as "Data"*/
 
     /*!< user specific field */
-    uint8_t   I2cDevAddr;                /*!< i2c device address user specific field */
-    uint8_t   comms_type;                /*!< Type of comms : VL53L0X_COMMS_I2C or VL53L0X_COMMS_SPI */
-    uint16_t  comms_speed_khz;           /*!< Comms speed [kHz] : typically 400kHz for I2C           */
-
+    uint8_t i2c_slave_address;
+	  i2c_dev_t i2c_dev; // I2C peripheral address
 } VL53L0X_Dev_t;
 
 
